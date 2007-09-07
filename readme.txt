@@ -39,7 +39,7 @@ A: Yes, see http://www.webopticon.com
 
 == Screenshots ==
 
-Yes, downloadable at: http://svn.wp-plugins.org/flickr-tag/trunk/screenshot.png
+Yes, downloadable at: <a href="http://svn.wp-plugins.org/flickr-tag/trunk/screenshot.png">http://svn.wp-plugins.org/flickr-tag/trunk/screenshot.png</a>
 
 == Special Tag Syntax ==
 
