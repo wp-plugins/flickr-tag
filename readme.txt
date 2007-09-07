@@ -36,6 +36,8 @@ A: See http://www.webopticon.com
 
 == Screenshots ==
 
+<img src="http://svn.wp-plugins.org/flickr-tag/trunk/screenshot.png"/>
+
 == Special Tag Syntax ==
 
 <flickr>set:set_id</flickr>
