@@ -1,4 +1,4 @@
-=== Plugin Name ===
+=== Flickr-Tag ===
 Contributors: crimesagainstlogic
 Tags: flickr, thumbnails, tag
 Requires at least: 2.2.1
