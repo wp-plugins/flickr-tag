@@ -25,9 +25,9 @@ Then activate the plugin in your WordPress plugins control panel.
 
 After installation, you'll have a new "Flickr" tab in the "glovebox" that appears when you edit/write articles. Use it to insert a favorite, or a set. You can also use the new "flickr" tag, whose syntax is: 
 
-<flickr [params]>set:set_id</flickr>
-<flickr [params]>tag:tag1[(,|&)tag2...][@username]</flickr>
-<flickr [params]>[photo:]photo_id</flickr>
+&lt;flickr [params]&gt;set:set_id&lt;/flickr&gt;
+&lt;flickr [params]&gt;tag:tag1[(,|&)tag2...][@username]&lt;/flickr&gt;
+&lt;flickr [params]&gt;[photo:]photo_id&lt;/flickr&gt;
 
 == Frequently Asked Questions ==
 
@@ -40,6 +40,6 @@ http://svn.wp-plugins.org/flickr-tag/trunk/screenshot.png
 
 == Special Tag Syntax ==
 
-<flickr>set:set_id</flickr>
-<flickr>tag:tag1[(,|&)tag2...][@username]</flickr>
-<flickr>photo:photo_id</flickr>
+&lt;flickr&gt;set:set_id&lt;/flickr&gt;
+&lt;flickr&gt;tag:tag1[(,|&)tag2...][@username]&lt;/flickr&gt;
+&lt;flickr&gt;photo:photo_id&lt;/flickr&gt;
