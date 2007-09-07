@@ -17,9 +17,9 @@ My solution was to write my own plugin.
 
 Start installation by uncompressing the gzip'd tarball to your local machine (you may need to re-add the extension .tar.gz; WordPress mangles it). 
 
-Edit the file flickr/flickr.php to set your Flickr API key and NSID. 
+Edit the file <span style="font-family: courier;">flickr/flickr.php</span> to set your Flickr API key and NSID. 
 
-Save the file, and copy the entire file flickr directory to [WordPress install root]/wp-content/plugins. Make sure the cache directory ([WordPress install root]/wp-content/plugins/flickr/cache) is writable by the webserver. 
+Save the file, and copy the entire flickr directory to <span style="font-family: courier;">[WordPress install root]/wp-content/plugins</span>. Make sure the cache directory (<span style="font-family: courier;">[WordPress install root]/wp-content/plugins/flickr/cache</span>) is writable by the webserver. 
 
 Then activate the plugin in your WordPress plugins control panel.
 
