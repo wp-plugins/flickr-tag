@@ -1,0 +1,17 @@
+IMG.flickr_img {
+	border: 0px;
+}
+
+IMG.flickr_thumbnail {
+	margin-right: 5px;
+	margin-bottom: 5px;
+
+	border: 0px;
+
+	width: 75px;
+	height: 75px;
+}
+
+A.flickr_link {
+	text-decoration: none;
+}
