@@ -31,6 +31,9 @@ After installation, you'll have a new "Flickr" tab in the "glovebox" that appear
 
 == Frequently Asked Questions ==
 
+Q: Is there an example I can see?
+A: See http://www.webopticon.com
+
 == Screenshots ==
 
 == Special Tag Syntax ==
