@@ -32,15 +32,18 @@ function flickr_api_call($params) {
 	if(file_exists(FLICKR_PLUGIN_CACHE_DIR . "/" . $cache_key . ".cache") && (time() - filemtime(FLICKR_PLUGIN_CACHE_DIR . "/" . $cache_key . ".cache")) < FLICKR_PLUGIN_CACHE_TTL_S)
 		$o = unserialize(file_get_contents(FLICKR_PLUGIN_CACHE_DIR . "/" . $cache_key . ".cache"));
 	else {
-		$c = curl_init();
+                @$c = curl_init();
 
-		curl_setopt($c, CURLOPT_URL, "http://api.flickr.com/services/rest/");
-		curl_setopt($c, CURLOPT_POST, 1);
-		curl_setopt($c, CURLOPT_POSTFIELDS, implode('&', $encoded_params));
-		curl_setopt($c, CURLOPT_RETURNTRANSFER, 1);
-		curl_setopt($c, CURLOPT_CONNECTTIMEOUT, 10);
-
-		$r = curl_exec($c);
+                if($c) {
+                        curl_setopt($c, CURLOPT_URL, "http://api.flickr.com/services/rest/");
+                        curl_setopt($c, CURLOPT_POST, 1);
+                        curl_setopt($c, CURLOPT_POSTFIELDS, implode('&', $encoded_params));
+                        curl_setopt($c, CURLOPT_RETURNTRANSFER, 1);
+                        curl_setopt($c, CURLOPT_CONNECTTIMEOUT, 10);
+  
+                        $r = curl_exec($c);
+                } else
+                        $r = file_get_contents("http://api.flickr.com/services/rest/?" . implode('&', $encoded_params));
 
 		if(! $r)
 			return null;
