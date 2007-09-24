@@ -4,46 +4,46 @@ Plugin Name: Flickr
 Description: This plugin allows you to show flickr sets/tags/individual photos in your posts by using a special tag.
 Author: Jeff Maki
 Author URI: http://www.webopticon.com
-Version: 1.0
+Version: 1.2
 */
 
 /////////////////// START EDITING HERE ///////////////////////
 
-// You do need to change this--apply for your own key at http://www.flickr.com/api
-define(FLICKR_PLUGIN_API_KEY, " <api key goes here> ");
-define(FLICKR_PLUGIN_NSID, " <nsid goes here> ");
+// You need to change this--apply for your own key at http://www.flickr.com/api
+define(FLICKR_PLUGIN_API_KEY, " <your API key here> ");
+define(FLICKR_PLUGIN_NSID, " <your NSID here> ");
 
 // You probably don't need to change these...
-define(FLICKR_PLUGIN_CACHE_TTL_S, 60 * 60 * 24 * 2); // 2 days
+define(FLICKR_PLUGIN_CACHE_TTL_S, 60 * 60 * 24 * 7); // 7 days
 define(FLICKR_PLUGIN_CACHE_DIR, ABSPATH . "/wp-content/plugins/flickr/cache");
 
 //////////////////// END EDITING HERE ////////////////////////
 
-function flickr_api_call($params) {
+function flickr_api_call($params, $cache = true) {
 	$encoded_params = array();
 
 	foreach ($params as $k=>$v)
 		$encoded_params[] = urlencode($k) . '=' . urlencode($v);
 
-	// put params into canonical order; find hash
+	// put params into canonical order; find hash for caching purposes
 	ksort($params);
 	$cache_key = md5(join($params, " "));
 
-	if(file_exists(FLICKR_PLUGIN_CACHE_DIR . "/" . $cache_key . ".cache") && (time() - filemtime(FLICKR_PLUGIN_CACHE_DIR . "/" . $cache_key . ".cache")) < FLICKR_PLUGIN_CACHE_TTL_S)
+	if($cache && file_exists(FLICKR_PLUGIN_CACHE_DIR . "/" . $cache_key . ".cache") && (time() - filemtime(FLICKR_PLUGIN_CACHE_DIR . "/" . $cache_key . ".cache")) < FLICKR_PLUGIN_CACHE_TTL_S)
 		$o = unserialize(file_get_contents(FLICKR_PLUGIN_CACHE_DIR . "/" . $cache_key . ".cache"));
 	else {
-                @$c = curl_init();
+		@$c = curl_init();
 
-                if($c) {
-                        curl_setopt($c, CURLOPT_URL, "http://api.flickr.com/services/rest/");
-                        curl_setopt($c, CURLOPT_POST, 1);
-                        curl_setopt($c, CURLOPT_POSTFIELDS, implode('&', $encoded_params));
-                        curl_setopt($c, CURLOPT_RETURNTRANSFER, 1);
-                        curl_setopt($c, CURLOPT_CONNECTTIMEOUT, 10);
-  
-                        $r = curl_exec($c);
-                } else
-                        $r = file_get_contents("http://api.flickr.com/services/rest/?" . implode('&', $encoded_params));
+		if($c) {
+			curl_setopt($c, CURLOPT_URL, "http://api.flickr.com/services/rest/");
+			curl_setopt($c, CURLOPT_POST, 1);
+			curl_setopt($c, CURLOPT_POSTFIELDS, implode('&', $encoded_params));
+			curl_setopt($c, CURLOPT_RETURNTRANSFER, 1);
+			curl_setopt($c, CURLOPT_CONNECTTIMEOUT, 10);
+
+			$r = curl_exec($c);
+		} else	// no curl available... 
+			$r = file_get_contents("http://api.flickr.com/services/rest/?" . implode('&', $encoded_params));
 
 		if(! $r)
 			return null;
@@ -53,11 +53,13 @@ function flickr_api_call($params) {
 		if($o['stat'] != "ok")
 			return null;
 
-		// save serialized response to cache
-		if(! is_dir(FLICKR_PLUGIN_CACHE_DIR))
-			mkdir(FLICKR_PLUGIN_CACHE_DIR);
+		if($cache) {
+			// save serialized response to cache
+			if(! is_dir(FLICKR_PLUGIN_CACHE_DIR))
+				mkdir(FLICKR_PLUGIN_CACHE_DIR);
 
-		file_put_contents(FLICKR_PLUGIN_CACHE_DIR . "/" . $cache_key . ".cache", $r, LOCK_EX);
+			file_put_contents(FLICKR_PLUGIN_CACHE_DIR . "/" . $cache_key . ".cache", $r, LOCK_EX);
+		}
 	}
 
 	return $o;
@@ -127,7 +129,7 @@ function get_flickr_tab_content() {
 					'format'	=> 'php_serial'
 				);
 
-				$r = flickr_api_call($params);
+				$r = flickr_api_call($params, false);
 
 				if($r) {
 					echo '<select id="flickr_sets">';
@@ -148,7 +150,6 @@ function get_flickr_tab_content() {
 			Or, click on a thumbnail to insert one of your favorites into your post:
 		</p>
 
-		<a name="favorites">
 		<p style="padding-left: 30px;">
 			<?php
 				$params = array(
@@ -158,13 +159,13 @@ function get_flickr_tab_content() {
 					'format'	=> 'php_serial'
 				);
 
-				$r = flickr_api_call($params);
+				$r = flickr_api_call($params, false);
 
 				if($r) {
 					foreach($r['photos']['photo'] as $number=>$photo) {
 						$img_url = "http://farm" . $photo['farm'] . ".static.flickr.com/" . $photo['server'] . "/" . $photo['id'] . "_" . $photo['secret'] . "_s.jpg";
 
-						echo '<a href="#favorites" onClick="insertIntoEditor(\'<flickr>photo:' . $photo['id'] . '</flickr>\');" class="flickr_link"><img src="' . $img_url . '" alt="" class="flickr_img flickr_thumbnail"/></a>';
+						echo '<a href="#" onClick="insertIntoEditor(\'<flickr>photo:' . $photo['id'] . '</flickr>\'); return false;" style="text-decoration: none; border: none;"><img src="' . $img_url . '" alt="" style="padding-right: 5px; padding-bottom: 5px;"/></a>';
 					}
 				} else {
 					echo "<I>No favorites were found on Flickr. Did you setup your API key and NSID correctly?</I>";
@@ -173,6 +174,7 @@ function get_flickr_tab_content() {
 		</p>
 	
 		If you've changed your sets or tags on Flickr but aren't seeing the changes on your blog, you need to flush the Flickr cache by using the button below. 
+		<em>The current cache lifetime is set to <? echo round(FLICKR_PLUGIN_CACHE_TTL_S / (24 * 60 * 60)); ?> day(s).</em>
 		
 		<p style="padding-left: 30px;">
 			<input class="button" type="button" value="Flush Flickr Cache &raquo;" onClick="window.location.href='<?php echo $_SERVER['SCRIPT_URI'] . "?" . $_SERVER['QUERY_STRING']; ?>&flickr_flushcache=true';">
@@ -218,7 +220,7 @@ function expand_flickr($content) {
 			continue;
 
 		$tag_param = substr($content, $s + strlen('<flickr'), $s2 - $s - strlen('<flickr'));		// tag params for addition to "img" tag
-		$contents = substr($content, $s2 + 1, $e - $s2 - 1);						// contents of tag ("cdata" in xml language)
+		$contents = substr($content, $s2 + 1, $e - $s2 - 1);						// contents of tag (i.e. "cdata" in xml parlance)
 
 		// replace flickr tag with rendered HTML
 		$content = substr($content, 0, $s) . flickr_render($contents, $tag_param) . substr($content, $e + strlen('</flickr>'));
