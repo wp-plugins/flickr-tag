@@ -1,191 +1,34 @@
 <?php
 /*
-Plugin Name: Flickr
-Description: This plugin allows you to show flickr sets/tags/individual photos in your posts by using a special tag.
+Plugin Name: Flickr Tag
+Description: Insert Flickr sets, tags or individual photos in your posts by using a special tag.
 Author: Jeff Maki
 Author URI: http://www.webopticon.com
-Version: 1.2
+Version: 1.3
+
+Copyright 2007 Jeffrey Maki (email: crimesagainstlogic@gmail.com)
+
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-/////////////////// START EDITING HERE ///////////////////////
+require(dirname(__FILE__) . "/flickr-common.php");
+require(dirname(__FILE__) . "/flickr-admin.php");
 
-// You need to change this--apply for your own key at http://www.flickr.com/api
-define(FLICKR_PLUGIN_API_KEY, " <your API key here> ");
-define(FLICKR_PLUGIN_NSID, " <your NSID here> ");
+add_action('wp_head', 'flickr_get_head');
 
-// You probably don't need to change these...
-define(FLICKR_PLUGIN_CACHE_TTL_S, 60 * 60 * 24 * 7); // 7 days
-define(FLICKR_PLUGIN_CACHE_DIR, ABSPATH . "/wp-content/plugins/flickr/cache");
-
-//////////////////// END EDITING HERE ////////////////////////
-
-function flickr_api_call($params, $cache = true) {
-	$encoded_params = array();
-
-	foreach ($params as $k=>$v)
-		$encoded_params[] = urlencode($k) . '=' . urlencode($v);
-
-	// put params into canonical order; find hash for caching purposes
-	ksort($params);
-	$cache_key = md5(join($params, " "));
-
-	if($cache && file_exists(FLICKR_PLUGIN_CACHE_DIR . "/" . $cache_key . ".cache") && (time() - filemtime(FLICKR_PLUGIN_CACHE_DIR . "/" . $cache_key . ".cache")) < FLICKR_PLUGIN_CACHE_TTL_S)
-		$o = unserialize(file_get_contents(FLICKR_PLUGIN_CACHE_DIR . "/" . $cache_key . ".cache"));
-	else {
-		@$c = curl_init();
-
-		if($c) {
-			curl_setopt($c, CURLOPT_URL, "http://api.flickr.com/services/rest/");
-			curl_setopt($c, CURLOPT_POST, 1);
-			curl_setopt($c, CURLOPT_POSTFIELDS, implode('&', $encoded_params));
-			curl_setopt($c, CURLOPT_RETURNTRANSFER, 1);
-			curl_setopt($c, CURLOPT_CONNECTTIMEOUT, 10);
-
-			$r = curl_exec($c);
-		} else	// no curl available... 
-			$r = file_get_contents("http://api.flickr.com/services/rest/?" . implode('&', $encoded_params));
-
-		if(! $r)
-			return null;
-
-		$o = unserialize($r);
-
-		if($o['stat'] != "ok")
-			return null;
-
-		if($cache) {
-			// save serialized response to cache
-			if(! is_dir(FLICKR_PLUGIN_CACHE_DIR))
-				mkdir(FLICKR_PLUGIN_CACHE_DIR);
-
-			file_put_contents(FLICKR_PLUGIN_CACHE_DIR . "/" . $cache_key . ".cache", $r, LOCK_EX);
-		}
-	}
-
-	return $o;
-}
-
-add_action('wp_upload_tabs', 'get_flickr_tab');
-
-function get_flickr_tab() {
-	GLOBAL $post_id;
-
-	if(! $post_id)	// only show on post edit/create page
-		return array();
-
-	return array('flickr' => array('Flickr', 'upload_files', 'get_flickr_tab_content', null, null));
-}
-
-function get_flickr_tab_content() {
-	// FIXME: HACK
-	if($_REQUEST['flickr_flushcache'] == "true" && strlen(FLICKR_PLUGIN_CACHE_DIR) > 0) // if FLICKR_PLUGIN_CACHE_DIR is empty, this removes the root! 
-		system("rm -f " . FLICKR_PLUGIN_CACHE_DIR . "/*");
-
-?>	
-	<script language="JavaScript">
-		function insertIntoEditor(h) {
-			var win = window.opener ? window.opener : window.dialogArguments;
-                
-			if ( !win )
-				win = top;
-		
-			tinyMCE = win.tinyMCE;
-		
-			if( typeof tinyMCE != 'undefined' && tinyMCE.getInstanceById('content') ) {
-				tinyMCE.selectedInstance.getWin().focus();
-				tinyMCE.execCommand('mceInsertContent', false, h);
-			} else
-				win.edInsertContent(win.edCanvas, h);
-                        
-			if(!this.ID)
-				this.cancelView();
-		
-			return false;
-		}
-	</script>
-
-	<div style="padding: 10px; padding-left: 15px;">
-		Tag Usage Syntax:
-
-		<p style="font-family: courier;">		
-			&lt;flickr [params]&gt;set:set_id&lt;/flickr&gt;<br>
-			&lt;flickr [params]&gt;tag:tag1[(,|&)tag2...][@username]&lt;/flickr&gt;<br>
-			&lt;flickr [params]&gt;[photo:]photo_id&lt;/flickr&gt;
-		</p>
-
-		<p style="font-style: italic;">
-			Any parameters you add to the flickr tag (e.g. "style" or "alt") are added to the inserted image tag. <br/>
-			If no mode is provided, "photo" is assumed (depricated). 
-		<p>
-
-		Choose a set from the list below to insert into your post:
-
-		<p style="padding-left: 30px;">
-			<?php
-				$params = array(
-					'api_key'	=> FLICKR_PLUGIN_API_KEY,
-					'method'	=> 'flickr.photosets.getList',
-					'user_id'	=> FLICKR_PLUGIN_NSID,
-					'format'	=> 'php_serial'
-				);
-
-				$r = flickr_api_call($params, false);
-
-				if($r) {
-					echo '<select id="flickr_sets">';
-
-					foreach($r['photosets']['photoset'] as $number=>$photoset)
-						echo '<option value="' . $photoset['id'] . '">' . $photoset['title']['_content'] . '</option>';
-					
-					echo '</select>';
-
-					echo '<input class="button" type="button" value="Send to editor &raquo;" onClick="insertIntoEditor(\'<flickr>set:\' + document.getElementById(\'flickr_sets\').value + \'</flickr>\');">';
-				} else { 
-					echo "<I>No sets were found on Flickr. Did you setup your API key and NSID correctly?</I>";
-				}
-			?>
-		</p>
-
-		<p>
-			Or, click on a thumbnail to insert one of your favorites into your post:
-		</p>
-
-		<p style="padding-left: 30px;">
-			<?php
-				$params = array(
-					'api_key'	=> FLICKR_PLUGIN_API_KEY,
-					'user_id'	=> FLICKR_PLUGIN_NSID,
-					'method'	=> 'flickr.favorites.getPublicList',
-					'format'	=> 'php_serial'
-				);
-
-				$r = flickr_api_call($params, false);
-
-				if($r) {
-					foreach($r['photos']['photo'] as $number=>$photo) {
-						$img_url = "http://farm" . $photo['farm'] . ".static.flickr.com/" . $photo['server'] . "/" . $photo['id'] . "_" . $photo['secret'] . "_s.jpg";
-
-						echo '<a href="#" onClick="insertIntoEditor(\'<flickr>photo:' . $photo['id'] . '</flickr>\'); return false;" style="text-decoration: none; border: none;"><img src="' . $img_url . '" alt="" style="padding-right: 5px; padding-bottom: 5px;"/></a>';
-					}
-				} else {
-					echo "<I>No favorites were found on Flickr. Did you setup your API key and NSID correctly?</I>";
-				}	
-			?>
-		</p>
-	
-		If you've changed your sets or tags on Flickr but aren't seeing the changes on your blog, you need to flush the Flickr cache by using the button below. 
-		<em>The current cache lifetime is set to <? echo round(FLICKR_PLUGIN_CACHE_TTL_S / (24 * 60 * 60)); ?> day(s).</em>
-		
-		<p style="padding-left: 30px;">
-			<input class="button" type="button" value="Flush Flickr Cache &raquo;" onClick="window.location.href='<?php echo $_SERVER['SCRIPT_URI'] . "?" . $_SERVER['QUERY_STRING']; ?>&flickr_flushcache=true';">
-		</p>
-	</div>
-<?php
-}
-
-add_action('wp_head', 'flickr_javascript');
-
-function flickr_javascript() {
+function flickr_get_head() {
 ?>
 	<script type="text/javascript" src="/wp-content/plugins/flickr/js/yahoo.js"></script>
 	<script type="text/javascript" src="/wp-content/plugins/flickr/js/dom.js"></script>
@@ -200,51 +43,52 @@ function flickr_javascript() {
 <?
 }
 
-add_action('the_content', 'expand_flickr');
+add_action('the_content', 'flickr_expand');
 
-function expand_flickr($content) {
+function flickr_expand($content) {
 	while(true) {
 		$s = strpos($content, '<flickr');
 		
-		if(! $s)
+		// no more flickr tags
+		if(! $s) 
 			break;
 
 		$s2 = strpos($content, '>', $s);
 
+		// malformed tag
 		if(! $s2)
 			continue;
 
 		$e = strpos($content, '</flickr>', $s2);
 
+		// malformed tag
 		if(! $e)
 			continue;
 
-		$tag_param = substr($content, $s + strlen('<flickr'), $s2 - $s - strlen('<flickr'));		// tag params for addition to "img" tag
+		$tag_params = substr($content, $s + strlen('<flickr'), $s2 - $s - strlen('<flickr'));		// tag params for addition to "img" tag
 		$contents = substr($content, $s2 + 1, $e - $s2 - 1);						// contents of tag (i.e. "cdata" in xml parlance)
 
 		// replace flickr tag with rendered HTML
-		$content = substr($content, 0, $s) . flickr_render($contents, $tag_param) . substr($content, $e + strlen('</flickr>'));
+		$content = substr($content, 0, $s) . flickr_render($contents, $tag_params) . substr($content, $e + strlen('</flickr>'));
 	}
 
 	return $content;
 }
 
-function flickr_render($input, $tag_param) {
-	$p =  strpos($input, ":");
-
+function flickr_render($input, $tag_params) {
+	$param = null;
 	$mode = null;
+
+	$p = strpos($input, ":");
 	if($p) {
 		$mode = strtolower(substr($input, 0, $p));
 		$param = substr($input, $p + 1);
 	} else
 		$param = $input;
 
-
-	$html = "";	
 	switch($mode) {
 		case "set":
 			$params = array(
-				'api_key'		=> FLICKR_PLUGIN_API_KEY,
 				'photoset_id'		=> $param,
 				'privacy_filter' 	=> 1, // public
 				'method'		=> 'flickr.photosets.getPhotos',
@@ -254,33 +98,9 @@ function flickr_render($input, $tag_param) {
 			$r = flickr_api_call($params);
 
 			if(! $r)
-				return "";
+				return flickr_bad_config();
 
-
-			$html = "";	
-			foreach($r['photoset']['photo'] as $number=>$photo) {
-				$img_url = "http://farm" . $photo['farm'] . ".static.flickr.com/" . $photo['server'] . "/" . $photo['id'] . "_" . $photo['secret'] . "_s.jpg";
-				$url = "http://www.flickr.com/photos/" . $r['photoset']['owner'] . "/" . $photo['id'] . "/in/set-" . $param . "/";
-
-
-				$params = array(
-					'api_key'		=> FLICKR_PLUGIN_API_KEY,
-					'photo_id'		=> $photo['id'],
-					'method'		=> 'flickr.photos.getInfo',
-					'format'		=> 'php_serial'
-				);
-
-				$r2 = flickr_api_call($params);
-
-
-				$extra = $tag_param;
-				if($r2) 
-					$extra .= 'title="' . htmlentities($r2['photo']['description']['_content']) . '"';
-
-				$html .= '<a href="' . $url . '" class="flickr_link"><img src="' . $img_url . '" alt="" class="flickr_img flickr_thumbnail" ' . $extra . '/></a>';
-			}
-
-			break;
+			return flickr_render_photos($r['photoset'], $mode, $tag_params);						
 
 		case "tag":
 			$p = strpos($param, "@");
@@ -296,7 +116,6 @@ function flickr_render($input, $tag_param) {
 			$nsid = null;
 			if($user) {
 				$params = array(
-					'api_key'		=> FLICKR_PLUGIN_API_KEY,
 					'username'		=> $user,
 					'method'		=> 'flickr.people.findByUsername',
 					'format'		=> 'php_serial'
@@ -305,14 +124,12 @@ function flickr_render($input, $tag_param) {
 				$r = flickr_api_call($params);
 
 				if(! $r)
-					return "";
+					return flickr_bad_config();
 
 				$nsid = $r['user']['nsid'];
 			}
 
-
 			$params = array(
-				'api_key'		=> FLICKR_PLUGIN_API_KEY,
 				'method'		=> 'flickr.photos.search',
 				'tags'			=> $tags,
 				'format'		=> 'php_serial'
@@ -330,38 +147,13 @@ function flickr_render($input, $tag_param) {
 			$r = flickr_api_call($params);
 	
 			if(! $r)
-				return "";
+				return flickr_bad_config();
 
-
-			$html = "";	
-			foreach($r['photos']['photo'] as $number=>$photo) {
-				$img_url = "http://farm" . $photo['farm'] . ".static.flickr.com/" . $photo['server'] . "/" . $photo['id'] . "_" . $photo['secret'] . "_s.jpg";
-				$url = "http://www.flickr.com/photos/" . $photo['owner'] . "/" . $photo['id'] . "/";
-
-
-				$params = array(
-					'api_key'		=> FLICKR_PLUGIN_API_KEY,
-					'photo_id'		=> $photo['id'],
-					'method'		=> 'flickr.photos.getInfo',
-					'format'		=> 'php_serial'
-				);
-
-				$r2 = flickr_api_call($params);
-
-
-				$extra = $tag_param;
-				if($r2) 
-					$extra .= 'title="' . htmlentities($r2['photo']['description']['_content']) . '"';
-
-				$html .= '<a href="' . $url . '" class="flickr_link"><img src="' . $img_url . '" alt="" class="flickr_img flickr_thumbnail" ' . $extra . '/></a>';
-			}
-
-			break;
+			return flickr_render_photos($r['photos'], $mode, $tag_params);
 
 		case "photo":
 		default:
 			$params = array(
-				'api_key'		=> FLICKR_PLUGIN_API_KEY,
 				'photo_id'		=> $param,
 				'method'		=> 'flickr.photos.getInfo',
 				'format'		=> 'php_serial'
@@ -370,19 +162,79 @@ function flickr_render($input, $tag_param) {
 			$r = flickr_api_call($params);
 
 			if(! $r)
-				return "";
+				return flickr_bad_config();
 
-			$extra = $tag_param;
-			$extra .= 'title="' . htmlentities($r['photo']['description']['_content']) . '"';
+			return flickr_render_photos($r['photo'], $mode, $tag_params);
+	}
+}
 
-			$img_url = 'http://farm' . $r['photo']['farm'] . '.static.flickr.com/' . $r['photo']['server'] . '/' . $r['photo']['id'] . '_' . $r['photo']['secret'] . '_m.jpg';
-			$url = "http://www.flickr.com/photos/" . $r['photo']['owner']['nsid'] . "/" . $r['photo']['id'] . "/";
+function flickr_render_photos($result, $mode, $tag_params) {
+	GLOBAL $flickr_config;
 
-			$html .= '<a href="' . $url . '" class="flickr_link"><img src="' . $img_url . '" alt="" class="flickr_img" ' . $extra . '/></a>';
+	$html = "";
+	$extra = $tag_params;
 
+	$i = null;
+	switch($mode) {
+		case "tag":
+		case "set":
+			$i = $result['photo'];
+			break;
+
+		default:
+		case "photo":
+			$i = array($result);
 			break;
 	}
 
+	foreach($i as $photo) {
+		$params = array(
+			'photo_id'		=> $photo['id'],
+			'method'		=> 'flickr.photos.getInfo',
+			'format'		=> 'php_serial'
+		);
+
+		$r = flickr_api_call($params);
+
+		if(! $r)
+			return flickr_bad_config();
+                                
+		$a_url = "http://www.flickr.com/photos/" . $r['photo']['owner']['nsid'] . "/" . $photo['id'] . "/";
+
+		switch($mode) {
+			case "tag":
+				$size = $flickr_config['tag_size'];
+				$title = $r['photo'][$flickr_config['tag_tooltip']]['_content'];
+
+				break;
+
+			case "set":
+				$size = $flickr_config['set_size'];
+				$title = $r['photo'][$flickr_config['set_tooltip']]['_content'];
+
+				$a_url .= "in/set-" . $result['id'] . "/";
+				break;
+
+			default:
+			case "photo":
+				$size = $flickr_config['photo_size'];
+				$title = $r['photo'][$flickr_config['photo_tooltip']]['_content'];
+
+				break;
+		}
+
+		if($title)
+			$extra .= ' title="' . htmlentities($title) . '"';
+
+		$img_url = "http://farm" . $photo['farm'] . ".static.flickr.com/" . $photo['server'] . "/" . $photo['id'] . "_" . $photo['secret'] . "_" . $size . ".jpg";
+
+		$html .= '<a href="' . $a_url . '" class="flickr_link"><img src="' . $img_url . '" alt="" class="flickr_img ' . $size . ' ' . $mode . '" ' . $extra . '"/></a>';
+	}
+
 	return $html;
+}
+
+function flickr_bad_config() {
+	return '<div class="flickr_error"><p>There was an error while querying Flickr. Check your configuration, or try this request again later.</p></div>';
 }
 ?>

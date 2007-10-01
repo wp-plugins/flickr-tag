@@ -1,11 +1,11 @@
-=== Flickr Tag ===
+=== Plugin Name ===
 Contributors: crimesagainstlogic
-Tags: flickr, thumbnails, tag
+Tags: flickr, thumbnails, tag, sets, photos
 Requires at least: 2.2.1
 Tested up to: 2.2.1
 Stable tag: trunk
 
-This plugin allows you to show flickr sets/tags/individual photos in your posts by using a special tag.
+Insert Flickr sets, tags or individual photos in your posts by using a special tag.
 
 == Description ==
 
@@ -15,36 +15,20 @@ My solution was to write my own plugin.
 
 == Installation ==
 
-Start installation by uncompressing the gzip'd tarball to your local machine (you may need to re-add the extension .tar.gz; WordPress mangles it). 
+Start installation by uncompressing the gzip'd tarball to your local machine 
 
-Edit the file flickr/flickr.php to set your Flickr API key and NSID. 
+Copy the entire flickr directory to [WordPress install root]/wp-content/plugins. Make sure the cache directory ([WordPress install root]/wp-content/plugins/flickr/cache) is writable by the webserver. 
 
-Save the file, and copy the entire flickr directory to [WordPress install root]/wp-content/plugins. Make sure the cache directory ([WordPress install root]/wp-content/plugins/flickr/cache) is writable by the webserver. 
-
-Then activate the plugin in your WordPress plugins control panel.
+Then, activate the plugin in your WordPress plugins control panel.
 
 After installation, you'll have a new "Flickr" tab in the "glovebox" that appears when you edit/write articles. Use it to insert a favorite, or a set. You can also use the new "flickr" tag, whose syntax is: 
 
-&lt;flickr [params]&gt;set:set_id&lt;/flickr&gt;
-<br/>
-&lt;flickr [params]&gt;tag:tag1[(,|&)tag2...][@username]&lt;/flickr&gt;
-<br/>
-&lt;flickr [params]&gt;[photo:]photo_id&lt;/flickr&gt;
+&lt;flickr [params]&gt;set:set_id|tag:tag1[(,|&)tag2...][@username]|photo:photo_id&lt;/flickr&gt;
 
 == Frequently Asked Questions ==
 
-Q: Is there an example I can see?
-<br/>
-A: Yes, see http://www.webopticon.com
-
 == Screenshots ==
-
-Yes, downloadable at: <a href="http://svn.wp-plugins.org/flickr-tag/trunk/screenshot.png">http://svn.wp-plugins.org/flickr-tag/trunk/screenshot.png</a>
 
 == Special Tag Syntax ==
 
-&lt;flickr [params]&gt;set:set_id&lt;/flickr&gt;
-<br/>
-&lt;flickr [params]&gt;tag:tag1[(,|&)tag2...][@username]&lt;/flickr&gt;
-<br/>
-&lt;flickr [params]&gt;[photo:]photo_id&lt;/flickr&gt;
+&lt;flickr [params]&gt;set:set_id|tag:tag1[(,|&)tag2...][@username]|photo:photo_id&lt;/flickr&gt;
