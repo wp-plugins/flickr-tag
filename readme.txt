@@ -15,13 +15,15 @@ My solution was to write my own plugin.
 
 == Installation ==
 
-Start installation by uncompressing the gzip'd tarball to your local machine 
+1. Uncompress the downloaded archive in [WordPress install root]/wp-content/plugins.
 
-Copy the entire flickr directory to [WordPress install root]/wp-content/plugins. Make sure the cache directory ([WordPress install root]/wp-content/plugins/flickr/cache) is writable by the webserver. 
+2. Make sure the cache directory ([WordPress install root]/wp-content/plugins/flickr/cache) is writable by the webserver. 
 
-Then, activate the plugin in your WordPress plugins control panel.
+2. Activate the plugin in your WordPress plugins control panel.
 
-After installation, you'll have a new "Flickr" tab in the "glovebox" that appears when you edit/write articles. Use it to insert a favorite, or a set. You can also use the new "flickr" tag, whose syntax is: 
+3. Go to the "Options" section, then choose "Flickr Tag" to configure the plugin. 
+
+After installation, you'll have a new "Flickr" tab in the "glovebox" that appears when you edit/write posts. Use it to insert a favorite, or a set. You can also use the new "flickr" tag, whose syntax is: 
 
 &lt;flickr [params]&gt;set:set_id|tag:tag1[(,|&)tag2...][@username]|photo:photo_id&lt;/flickr&gt;
 

@@ -168,6 +168,7 @@ function flickr_get_admin_page_content() {
 						$flickr_url .= "&perms=read";
 						$flickr_url .= "&frob=" . $frob;
 						$flickr_url .= "&api_sig=" . md5(FLICKR_TAG_API_KEY_SS . "api_key" . FLICKR_TAG_API_KEY . "frob" . $frob . "permsread");
+
 					?>
 						Authorizing this plugin with Flickr is a simple, two step process:
 
