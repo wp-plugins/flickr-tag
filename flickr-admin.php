@@ -37,26 +37,45 @@ function flickr_get_user_tab() {
 function flickr_get_admin_page_content() {
 	GLOBAL $flickr_config;
 
+	// logout
+	if($_REQUEST['flickr_logout']) {
+		update_option("flickr_token", "");
+		$flickr_config['token'] = null;
+
 	// flush cache
-	if($_REQUEST['flickr_flush_cache']) {
+	} else if($_REQUEST['flickr_flush_cache']) {
 		echo '<div class="updated fade"><p><strong>Removed ' . flickr_flush_cache() . ' item(s) from the cache.</strong></p></div>';
 
-	} else {
 	// save settings
-		$c = 0;
-		foreach($_REQUEST as $k=>$v) {
-			// filter out form fields that are not ours
-			if(substr($k, 0, 7) != "flickr_") 
-				continue;
+	} else if($_REQUEST['flickr_save_options']) {
+		$has_error = false;
 
-			update_option($k, trim($v));
-			$c++;
+		if(! ctype_digit($_REQUEST['flickr_tag_limit'])) {
+			echo '<div class="error fade"><p><strong>The display limit for tags must be a number.</strong></p></div>';
+			$has_error = true;
 		}
 
-		if($c > 0) {
-			flickr_load_config();
+		if(! ctype_digit($_REQUEST['flickr_set_limit'])) {
+			echo '<div class="error fade"><p><strong>The display limit for sets must be a number.</strong></p></div>';
+			$has_error = true;
+		}
 
-			echo '<div class="updated fade"><p><strong>Settings successfully saved.</strong></p></div>';
+		if(! $has_error) {
+			$c = 0;
+			foreach($_REQUEST as $k=>$v) {
+				// filter out form fields that are not ours
+				if(substr($k, 0, 7) != "flickr_") 
+					continue;
+
+				update_option($k, trim($v));
+				$c++;
+			}
+
+			if($c > 0) {
+				flickr_load_config();
+
+				echo '<div class="updated fade"><p><strong>Settings successfully saved.</strong></p></div>';
+			}
 		}
 	}	
 
@@ -82,6 +101,12 @@ function flickr_get_admin_page_content() {
 	<style type="text/css">
 		.header {
 			font-weight: bold;
+			border-bottom: 1px solid #CCCCCC;
+		}
+
+		.subheader {
+			font-style: italic;
+			padding-left: 20px;
 		}
 
 		.label {
@@ -107,19 +132,19 @@ function flickr_get_admin_page_content() {
 
 		.current {
 			padding: 3px;
-			background-color: #FFFFCC;
-			border: 1px solid yellow;
+			background-color: #FFFFDD;
+			border: 1px solid #EAD43E;
 		}
 
 		.disabled {
 			padding: 3px;
 			background-color: #EFEFEF;
 			border: 1px solid #C0C0C0;
-			color: grey;
+			color: #B0B0B0;
 		}
 
 		.disabled A {
-			color: grey;
+			color: #B0B0B0;
 			text-decoration: none;
 			cursor: default;
 		}
@@ -132,10 +157,10 @@ function flickr_get_admin_page_content() {
 		<p class="header">Flickr Authentication</p>
 
 		<?
-			if($current_user)
-				echo "Logged in to Flickr as <a href='http://www.flickr.com/people/" . $current_user['auth']['user']['nsid'] . "' target='_new'>" . $current_user['auth']['user']['username'] . "</a>.";
-			
-			if(! $flickr_config['token'] || ! $current_user) {
+			if($current_user) {
+				echo 'Currently logged in to Flickr as <a href="http://www.flickr.com/people/' . $current_user['auth']['user']['nsid'] . '" target="_new">' . $current_user['auth']['user']['username'] . '</a> (<a href="/wp-admin/options-general.php?page=' . basename(__FILE__) . '&flickr_logout=true">logout</a>)';
+
+			} else {			
 				$flickr_config['token'] = null;
 
 				// convert frob into token
@@ -185,7 +210,7 @@ function flickr_get_admin_page_content() {
 			}
 		?>
 
-		<p class="header">Caching</p>
+		<p class="header">Cache Options</p>
 
 		<p class="label">Cache Lifetime:</p>
 		<p class="field">
@@ -211,19 +236,22 @@ function flickr_get_admin_page_content() {
 			If you have made changes on Flickr, but are not seeing these changes reflected on your blog, you may need to flush the Flickr cache. This will happen automatically after the cache lifetime period expires (set above).
 		</p>
 
-		<p class="header">Display</p>
+		<p class="header">Display Options</p>
 
-		<p class="label">Individual Photo Size:</p>
+		<p class="subheader">Photos</p>
+
+		<p class="label">Photo Size:</p>
 		<p class="field">
 			<select size=1 name="flickr_photo_size">
 				<option value="s" <?php if($flickr_config['photo_size'] == "s") echo "selected"; ?>>Square (75 x 75 pixels)</option>
 				<option value="t" <?php if($flickr_config['photo_size'] == "t") echo "selected"; ?>>Thumbnail (100 x 75 pixels)</option>
 				<option value="m" <?php if($flickr_config['photo_size'] == "m") echo "selected"; ?>>Small (240 x 180 pixels)</option>
+				<option value="_" <?php if($flickr_config['photo_size'] == "_") echo "selected"; ?>>Medium (500 x 375 pixels)</option>
 				<option value="b" <?php if($flickr_config['photo_size'] == "b") echo "selected"; ?>>Large (1024 x 768 pixels)</option>
 			</select>
 		</p>
 
-		<p class="label">Individual Photo Tooltip:</p>	
+		<p class="label">Tooltip Contents:</p>	
 		<p class="field">	
 			<select size=1 name="flickr_photo_tooltip">
 				<option value="description" <?php if($flickr_config['photo_tooltip'] == "description") echo "selected"; ?>>Photo Description</option>
@@ -232,20 +260,23 @@ function flickr_get_admin_page_content() {
 		</p>
 
 		<p class="more">
-		The above options control how pictures using the tag mode "photo:..." are displayed.
+		The above options control how Flickr photos are displayed when using the Flickr tag mode "photo".
 		</p>
 
-		<p class="label">Set Photo Size:</p>
+		<p class="subheader">Sets</p>
+
+		<p class="label">Photo Size:</p>
 		<p class="field">
 			<select size=1 name="flickr_set_size">
 				<option value="s" <?php if($flickr_config['set_size'] == "s") echo "selected"; ?>>Square (75 x 75 pixels)</option>
 				<option value="t" <?php if($flickr_config['set_size'] == "t") echo "selected"; ?>>Thumbnail (100 x 75 pixels)</option>
 				<option value="m" <?php if($flickr_config['set_size'] == "m") echo "selected"; ?>>Small (240 x 180 pixels)</option>
+				<option value="_" <?php if($flickr_config['set_size'] == "_") echo "selected"; ?>>Medium (500 x 375 pixels)</option>
 				<option value="b" <?php if($flickr_config['set_size'] == "b") echo "selected"; ?>>Large (1024 x 768 pixels)</option>
 			</select>
 		</p>
 
-		<p class="label">Set Photo Tooltip:</p>	
+		<p class="label">Tooltip Contents:</p>	
 		<p class="field">	
 			<select size=1 name="flickr_set_tooltip">
 				<option value="description" <?php if($flickr_config['set_tooltip'] == "description") echo "selected"; ?>>Photo Description</option>
@@ -253,21 +284,29 @@ function flickr_get_admin_page_content() {
 			</select>
 		</p>
 
-		<p class="more">
-		The above options control how pictures using the tag mode "set:..." are displayed.
+		<p class="label">Display Limit:</p>
+		<p class="field">
+			<input type="text" size=3 name="flickr_set_limit" value="<? echo $flickr_config['set_limit']; ?>"> photo(s)
 		</p>
 
-		<p class="label">Tag Photo Size:</p>
+		<p class="more">
+		The above options control how Flickr sets are displayed when using the Flickr tag mode "set".
+		</p>
+
+		<p class="subheader">Tags</p>
+
+		<p class="label">Photo Size:</p>
 		<p class="field">
 			<select size=1 name="flickr_tag_size">
 				<option value="s" <?php if($flickr_config['tag_size'] == "s") echo "selected"; ?>>Square (75 x 75 pixels)</option>
 				<option value="t" <?php if($flickr_config['tag_size'] == "t") echo "selected"; ?>>Thumbnail (100 x 75 pixels)</option>
 				<option value="m" <?php if($flickr_config['tag_size'] == "m") echo "selected"; ?>>Small (240 x 180 pixels)</option>
+				<option value="_" <?php if($flickr_config['tag_size'] == "_") echo "selected"; ?>>Medium (500 x 375 pixels)</option>
 				<option value="b" <?php if($flickr_config['tag_size'] == "b") echo "selected"; ?>>Large (1024 x 768 pixels)</option>
 			</select>
 		</p>
 
-		<p class="label">Tag Photo Tooltip:</p>	
+		<p class="label">Tooltip Contents:</p>
 		<p class="field">	
 			<select size=1 name="flickr_tag_tooltip">
 				<option value="description" <?php if($flickr_config['tag_tooltip'] == "description") echo "selected"; ?>>Photo Description</option>
@@ -275,12 +314,19 @@ function flickr_get_admin_page_content() {
 			</select>
 		</p>
 
-		<p class="more">
-		The above options control how pictures using the tag mode "tag:..." are displayed.
+		<p class="label">Display Limit:</p>
+		<p class="field">
+			<input type="text" size=3 name="flickr_tag_limit" value="<? echo $flickr_config['tag_limit']; ?>"> photo(s)
 		</p>
 
+		<p class="more">
+		The above options control how Flickr tags are displayed when using the Flickr tag mode "tag".
+		</p>
+
+		<p class="header"></p>
+
 		<p>
-			<input type="submit" value="Save Changes">
+			<input type="submit" name="flickr_save_options" value="Save Changes">
 		</p>
 
 		</form>
@@ -327,8 +373,8 @@ function flickr_get_user_tab_content() {
 				if($r) {
 					echo '<select id="flickr_sets">';
 
-					foreach($r['photosets']['photoset'] as $number=>$photoset)
-						echo '<option value="' . $photoset['id'] . '">' . $photoset['title']['_content'] . '</option>';
+					foreach($r['photosets']['photoset'] as $number=>$photoset) 
+						echo '<option value="' . $photoset['id'] . '">' . $photoset['title']['_content'] . ' (' . $photoset['photos'] . ' photo' . (($photoset['photos'] != 1) ? "s" : "") . ')</option>';
 					
 					echo '</select>';
 
@@ -365,7 +411,7 @@ function flickr_get_user_tab_content() {
 		</p>
 
 		<p>
-			Or, include a Flickr set, tag or photo in your post by using the "flickr" tag in your post's text. The syntax is: 
+			Or, include a set, tag or photo in your post by using the "flickr" tag in your post's text. The syntax is: 
 		</p>
 
 		<p style="font-family: courier;">		

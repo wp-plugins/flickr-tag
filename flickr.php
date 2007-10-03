@@ -4,7 +4,7 @@ Plugin Name: Flickr Tag
 Description: Insert Flickr sets, tags or individual photos in your posts by using a special tag.
 Author: Jeff Maki
 Author URI: http://www.webopticon.com
-Version: 1.3.2
+Version: 1.3.3
 
 Copyright 2007 Jeffrey Maki (email: crimesagainstlogic@gmail.com)
 
@@ -153,6 +153,8 @@ function flickr_render($input, $tag_params) {
 
 		case "photo":
 		default:
+			$mode = "photo";
+
 			$params = array(
 				'photo_id'		=> $param,
 				'method'		=> 'flickr.photos.getInfo',
@@ -172,19 +174,12 @@ function flickr_render_photos($result, $mode, $tag_params) {
 	GLOBAL $flickr_config;
 
 	$html = "";
-
 	$i = null;
-	switch($mode) {
-		case "tag":
-		case "set":
-			$i = $result['photo'];
-			break;
 
-		default:
-		case "photo":
-			$i = array($result);
-			break;
-	}
+	if($mode == "tag" || $mode == "set")
+		$i = array_slice($result['photo'], 0, $flickr_config[$mode . '_limit'], true);
+	else 
+		$i = array($result);
 
 	foreach($i as $photo) {
 		$extra = $tag_params;
@@ -200,35 +195,18 @@ function flickr_render_photos($result, $mode, $tag_params) {
 		if(! $r)
 			return flickr_bad_config();
                                 
+		$size = (($flickr_config[$mode . '_size'] != "_") ? "_" . $flickr_config[$mode . '_size'] : "");
+		$img_url = "http://farm" . $photo['farm'] . ".static.flickr.com/" . $photo['server'] . "/" . $photo['id'] . "_" . $photo['secret'] . $size . ".jpg";
+
 		$a_url = "http://www.flickr.com/photos/" . $r['photo']['owner']['nsid'] . "/" . $photo['id'] . "/";
 
-		switch($mode) {
-			case "tag":
-				$size = $flickr_config['tag_size'];
-				$title = $r['photo'][$flickr_config['tag_tooltip']]['_content'];
+		if($mode == "set")
+			$a_url .= "in/set-" . $result['id'] . "/";
 
-				break;
-
-			case "set":
-				$size = $flickr_config['set_size'];
-				$title = $r['photo'][$flickr_config['set_tooltip']]['_content'];
-
-				$a_url .= "in/set-" . $result['id'] . "/";
-	
-				break;
-
-			default:
-			case "photo":
-				$size = $flickr_config['photo_size'];
-				$title = $r['photo'][$flickr_config['photo_tooltip']]['_content'];
-
-				break;
-		}
+		$title = $r['photo'][$flickr_config[$mode . '_tooltip']]['_content'];
 
 		if($title)
 			$extra .= ' title="' . htmlentities($title) . '"';
-
-		$img_url = "http://farm" . $photo['farm'] . ".static.flickr.com/" . $photo['server'] . "/" . $photo['id'] . "_" . $photo['secret'] . "_" . $size . ".jpg";
 
 		$html .= '<a href="' . $a_url . '" class="flickr_link"><img src="' . $img_url . '" alt="" class="flickr_img ' . $size . ' ' . $mode . '" ' . $extra . '"/></a>';
 	}

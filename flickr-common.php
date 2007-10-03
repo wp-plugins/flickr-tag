@@ -25,7 +25,7 @@ flickr_load_config();
 function flickr_get_option($key, $default = null) {
 	$v = get_option($key);
 
-	if(! $v)
+	if($v == null)
 		return $default;
 	else
 		return $v;
@@ -38,14 +38,16 @@ function flickr_load_config() {
 	$flickr_config['cache_ttl'] = flickr_get_option("flickr_cache_ttl", 604800);
 	$flickr_config['cache_dir'] = dirname(__FILE__) . "/cache";
 
-	$flickr_config['photo_size'] = flickr_get_option("flickr_photo_size", "m");
+	$flickr_config['photo_size'] = flickr_get_option("flickr_photo_size", "_m");
 	$flickr_config['photo_tooltip'] = flickr_get_option("flickr_photo_tooltip", "description");
 
-	$flickr_config['set_size'] = flickr_get_option("flickr_set_size", "s");
+	$flickr_config['set_size'] = flickr_get_option("flickr_set_size", "_s");
 	$flickr_config['set_tooltip'] = flickr_get_option("flickr_set_tooltip", "description");
+	$flickr_config['set_limit'] = flickr_get_option("flickr_set_limit", "50");
 
-	$flickr_config['tag_size'] = flickr_get_option("flickr_tag_size", "s");
+	$flickr_config['tag_size'] = flickr_get_option("flickr_tag_size", "_s");
 	$flickr_config['tag_tooltip'] = flickr_get_option("flickr_tag_tooltip", "description");
+	$flickr_config['tag_limit'] = flickr_get_option("flickr_tag_limit", "50");
 }
 
 function flickr_api_call($params, $cache = true, $sign = true) {
