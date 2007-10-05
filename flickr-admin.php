@@ -286,7 +286,7 @@ function flickr_get_admin_page_content() {
 
 		<p class="label">Display Limit:</p>
 		<p class="field">
-			<input type="text" size=3 name="flickr_set_limit" value="<? echo $flickr_config['set_limit']; ?>"> photo(s)
+			<input type="text" size=3 name="flickr_set_limit" value="<?php echo $flickr_config['set_limit']; ?>"> photo(s)
 		</p>
 
 		<p class="more">
@@ -316,7 +316,7 @@ function flickr_get_admin_page_content() {
 
 		<p class="label">Display Limit:</p>
 		<p class="field">
-			<input type="text" size=3 name="flickr_tag_limit" value="<? echo $flickr_config['tag_limit']; ?>"> photo(s)
+			<input type="text" size=3 name="flickr_tag_limit" value="<?php echo $flickr_config['tag_limit']; ?>"> photo(s)
 		</p>
 
 		<p class="more">
