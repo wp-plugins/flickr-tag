@@ -17,7 +17,7 @@ My solution was to write my own plugin.
 
 1. Uncompress the downloaded archive in [WordPress install root]/wp-content/plugins.
 
-2. Make sure the cache directory ([WordPress install root]/wp-content/plugins/flickr/cache) is writable by the webserver. 
+2. Make sure the cache directory ([WordPress install root]/wp-content/plugins/flickr-tag/cache) is writable by the webserver. 
 
 2. Activate the plugin in your WordPress plugins control panel.
 

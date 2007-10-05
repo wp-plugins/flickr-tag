@@ -23,23 +23,23 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-require(dirname(__FILE__) . "/flickr-common.php");
-require(dirname(__FILE__) . "/flickr-admin.php");
+require(dirname(__FILE__) . "/flickr-tag-common.php");
+require(dirname(__FILE__) . "/flickr-tag-admin.php");
 
 add_action('wp_head', 'flickr_get_head');
 
 function flickr_get_head() {
 ?>
-	<script type="text/javascript" src="/wp-content/plugins/flickr/js/yahoo.js"></script>
-	<script type="text/javascript" src="/wp-content/plugins/flickr/js/dom.js"></script>
-	<script type="text/javascript" src="/wp-content/plugins/flickr/js/event.js"></script>
-	<script type="text/javascript" src="/wp-content/plugins/flickr/js/container.js"></script>
-	<script type="text/javascript" src="/wp-content/plugins/flickr/js/utilities.js"></script>
+	<script type="text/javascript" src="/wp-content/plugins/flickr-tag/js/yahoo.js"></script>
+	<script type="text/javascript" src="/wp-content/plugins/flickr-tag/js/dom.js"></script>
+	<script type="text/javascript" src="/wp-content/plugins/flickr-tag/js/event.js"></script>
+	<script type="text/javascript" src="/wp-content/plugins/flickr-tag/js/container.js"></script>
+	<script type="text/javascript" src="/wp-content/plugins/flickr-tag/js/utilities.js"></script>
 
-	<script type="text/javascript" src="/wp-content/plugins/flickr/js/autoTooltips.js"></script>
-	<link href="/wp-content/plugins/flickr/css/autoTooltips.css" type="text/css" rel="stylesheet"/>
+	<script type="text/javascript" src="/wp-content/plugins/flickr-tag/js/autoTooltips.js"></script>
+	<link href="/wp-content/plugins/flickr-tag/css/autoTooltips.css" type="text/css" rel="stylesheet"/>
 
-	<link href="/wp-content/plugins/flickr/css/flickr.css" type="text/css" rel="stylesheet"/>
+	<link href="/wp-content/plugins/flickr-tag/css/flickr-tag.css" type="text/css" rel="stylesheet"/>
 <?
 }
 

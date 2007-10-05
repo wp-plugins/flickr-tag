@@ -286,7 +286,7 @@ function flickr_get_admin_page_content() {
 
 		<p class="label">Display Limit:</p>
 		<p class="field">
-			<input type="text" size=3 name="flickr_set_limit" value="<?php echo $flickr_config['set_limit']; ?>"> photo(s)
+			<input type="text" size=3 name="flickr_set_limit" value="<? echo $flickr_config['set_limit']; ?>"> photo(s)
 		</p>
 
 		<p class="more">
@@ -316,7 +316,7 @@ function flickr_get_admin_page_content() {
 
 		<p class="label">Display Limit:</p>
 		<p class="field">
-			<input type="text" size=3 name="flickr_tag_limit" value="<?php echo $flickr_config['tag_limit']; ?>"> photo(s)
+			<input type="text" size=3 name="flickr_tag_limit" value="<? echo $flickr_config['tag_limit']; ?>"> photo(s)
 		</p>
 
 		<p class="more">
@@ -380,7 +380,7 @@ function flickr_get_user_tab_content() {
 
 					echo '<input class="button" type="button" value="Send to editor &raquo;" onClick="insertIntoEditor(\'<flickr>set:\' + document.getElementById(\'flickr_sets\').value + \'</flickr>\');">';
 				} else { 
-					echo "<em>No sets were found on Flickr. Did you <a href='options-general.php?page=flickr.php' target='_top'>setup the plugin</a> yet?</em>";
+					echo "<em>No sets were found on Flickr. Did you <a href='options-general.php?page=flickr-tag.php' target='_top'>setup the plugin</a> yet?</em>";
 				}
 			?>
 		</p>
@@ -405,7 +405,7 @@ function flickr_get_user_tab_content() {
 						echo '<a href="#" onClick="insertIntoEditor(\'<flickr>photo:' . $photo['id'] . '</flickr>\'); return false;" style="text-decoration: none; border: none;"><img src="' . $img_url . '" alt="" style="padding-right: 5px; padding-bottom: 5px;"/></a>';
 					}
 				} else {
-					echo "<em>No favorites were found on Flickr. Did you <a href='options-general.php?page=flickr.php' target='_top'>setup the plugin</a> yet?</em>";
+					echo "<em>No favorites were found on Flickr. Did you <a href='options-general.php?page=flickr-tag.php' target='_top'>setup the plugin</a> yet?</em>";
 				}	
 			?>
 		</p>
