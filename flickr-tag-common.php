@@ -22,6 +22,15 @@ define("FLICKR_TAG_API_KEY_SS", "2406fd6c36b852fd");
 
 flickr_load_config();
 
+// compatability stuff
+if(! function_exists("file_put_contents")) {
+	function file_put_contents($file, $contents, $flag) {
+		$r = fopen($file, "w+");
+		fwrite($r, $contents);
+		fclose($r);
+	}
+}
+
 function flickr_get_option($key, $default = null) {
 	$v = get_option($key);
 
