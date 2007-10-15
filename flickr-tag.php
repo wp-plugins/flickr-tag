@@ -40,7 +40,7 @@ function flickr_get_head() {
 	<link href="/wp-content/plugins/flickr-tag/css/autoTooltips.css" type="text/css" rel="stylesheet"/>
 
 	<link href="/wp-content/plugins/flickr-tag/css/flickr-tag.css" type="text/css" rel="stylesheet"/>
-<?
+<?php
 }
 
 add_action('the_content', 'flickr_expand');

@@ -156,7 +156,7 @@ function flickr_get_admin_page_content() {
 		<form action="" method="post">
 		<p class="header">Flickr Authentication</p>
 
-		<?
+		<?php
 			if($current_user) {
 				echo 'Currently logged in to Flickr as <a href="http://www.flickr.com/people/' . $current_user['auth']['user']['nsid'] . '" target="_new">' . $current_user['auth']['user']['username'] . '</a> (<a href="/wp-admin/options-general.php?page=' . basename(__FILE__) . '&flickr_logout=true">logout</a>)';
 
@@ -286,7 +286,7 @@ function flickr_get_admin_page_content() {
 
 		<p class="label">Display Limit:</p>
 		<p class="field">
-			<input type="text" size=3 name="flickr_set_limit" value="<? echo $flickr_config['set_limit']; ?>"> photo(s)
+			<input type="text" size=3 name="flickr_set_limit" value="<?php echo $flickr_config['set_limit']; ?>"> photo(s)
 		</p>
 
 		<p class="more">
@@ -316,7 +316,7 @@ function flickr_get_admin_page_content() {
 
 		<p class="label">Display Limit:</p>
 		<p class="field">
-			<input type="text" size=3 name="flickr_tag_limit" value="<? echo $flickr_config['tag_limit']; ?>"> photo(s)
+			<input type="text" size=3 name="flickr_tag_limit" value="<?php echo $flickr_config['tag_limit']; ?>"> photo(s)
 		</p>
 
 		<p class="more">
@@ -331,7 +331,7 @@ function flickr_get_admin_page_content() {
 
 		</form>
 	</div>
-<?
+<?php
 }
 
 function flickr_get_user_tab_content() {
