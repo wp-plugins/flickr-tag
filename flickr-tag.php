@@ -208,7 +208,7 @@ function flickr_render_photos($result, $mode, $tag_params) {
 		if($title)
 			$extra .= ' title="' . htmlentities($title) . '"';
 
-		$html .= '<a href="' . $a_url . '" class="flickr_link"><img src="' . $img_url . '" alt="" class="flickr_img ' . $size . ' ' . $mode . '" ' . $extra . '"/></a>';
+		$html .= '<a href="' . $a_url . '" class="flickr_link"><img src="' . $img_url . '" alt="" class="flickr_img ' . $flickr_config[$mode . '_size'] . ' ' . $mode . '" ' . $extra . '"/></a>';
 	}
 
 	return $html;
