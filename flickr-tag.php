@@ -177,7 +177,7 @@ function flickr_render_photos($result, $mode, $tag_params) {
 	$i = null;
 
 	if($mode == "tag" || $mode == "set")
-		$i = array_slice($result['photo'], 0, $flickr_config[$mode . '_limit'], true);
+		$i = array_slice($result['photo'], 0, $flickr_config[$mode . '_limit']);
 	else 
 		$i = array($result);
 
