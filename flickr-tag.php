@@ -4,7 +4,7 @@ Plugin Name: Flickr Tag
 Description: Insert Flickr sets, tags or individual photos in your posts by using a special tag.
 Author: Jeff Maki
 Author URI: http://www.webopticon.com
-Version: 1.3.7
+Version: 1.3.8
 
 Copyright 2007 Jeffrey Maki (email: crimesagainstlogic@gmail.com)
 
@@ -113,6 +113,8 @@ function flickr_render($input, $tag_params) {
 				$user = null;
 			}
 
+			$tags = str_replace("&", ",", $tags);
+
 			$nsid = null;
 			if($user) {
 				$params = array(
@@ -137,7 +139,7 @@ function flickr_render($input, $tag_params) {
 
 			if(strpos($tags, "&") > 0) {
 				$params['tag_mode'] = "all";
-				$params['tags'] = str_replace("&", ",", $params['tags']);
+				$params['tags'] = $tags;
 			} else
 				$params['tag_mode'] = "any";
 
