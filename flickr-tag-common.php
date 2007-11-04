@@ -98,9 +98,9 @@ function flickr_api_call($params, $cache = true, $sign = true) {
 			$r = file_get_contents("http://api.flickr.com/services/rest/?" . implode('&', $encoded_params));
 
 		if(! $r)
-			return null;
+			die("API call failed. Is libcurl and or URL fopen() wrappers available?");
 
-		$o = unserialize($r);
+	 	$o = unserialize($r);
 
 		if($o['stat'] != "ok")
 			return null;
