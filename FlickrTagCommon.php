@@ -160,7 +160,7 @@ class FlickrTagCommon {
 				$r = file_get_contents("http://api.flickr.com/services/rest/?" . implode('&', $encoded_params));
 
 			if(! $r)
-				$this->error("libcurl or URL fopen() wrappers were not found!");
+				$this->error("libcurl or URL fopen() wrappers were not found. Can't continue...");
 
 		 	$o = unserialize($r);
 

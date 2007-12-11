@@ -459,8 +459,6 @@ class FlickrTagAdmin extends FlickrTagCommon {
 			<p style="font-family: courier; padding: 3px; background-color: #EFEFEF;">
 				[flickr style="padding: 10px;"]tag:railcar+adm@anemergencystop(large, 20)[/flickr]
 			</p>
-
-
 		</div>
 	<?php
 	}
