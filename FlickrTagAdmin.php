@@ -28,7 +28,7 @@ class FlickrTagAdmin extends FlickrTagCommon {
 		add_action("admin_head", array($this, "getAdminHead"));
 	}
 
-	public function getRequest() {
+	function getRequest() {
 		// find only request parameters that belong to us
 		foreach($_REQUEST as $key=>$value) {
 			if(substr($key, 0, 11) == "flickr_tag_")
@@ -37,12 +37,12 @@ class FlickrTagAdmin extends FlickrTagCommon {
 	}
 
 	// called by wordpress add_action()
-	public function setupAdminMenu() {
+	function setupAdminMenu() {
 		add_options_page("Flickr Tag", "Flickr Tag", "administrator", basename(__FILE__), array($this, "getAdminContent"));
 	}
 
 	// called by wordpress add_action()
-	public function setupUserMenu() {
+	function setupUserMenu() {
 		GLOBAL $post_id;
 
 		if(! $post_id)	// only show on post edit/create page
@@ -51,7 +51,7 @@ class FlickrTagAdmin extends FlickrTagCommon {
 		return array("flickr" => array("Flickr", "upload_files", array($this, "getUserContent"), null, null));
 	}
 
-	public function getDisplayDefaultsOptionsHTML($entity) {
+	function getDisplayDefaultsOptionsHTML($entity) {
 	?>
 		<p class="label">Photo Size:</p>
 		<p class="field">
@@ -89,7 +89,7 @@ class FlickrTagAdmin extends FlickrTagCommon {
 	<?php
 	}
 
-	public function getCurrentUser() {
+	function getCurrentUser() {
 		if($this->optionGet("token")) {
 			$params = array(
 				'method'	=> 'flickr.auth.checkToken',
@@ -113,7 +113,7 @@ class FlickrTagAdmin extends FlickrTagCommon {
 		return null;
 	}
 
-	public function migrate() {
+	function migrate() {
 		GLOBAL $wpdb;
 
 		$migrate_posts = $wpdb->get_results("SELECT * FROM wp_posts WHERE post_content LIKE '%<flickr%>%</flickr>%';");
@@ -154,13 +154,13 @@ class FlickrTagAdmin extends FlickrTagCommon {
 		$migrate_options = $wpdb->get_results("DELETE FROM wp_options WHERE option_name LIKE 'flickr_%';");
 	}
 
-	public function migrateNeeded() {
+	function migrateNeeded() {
 		GLOBAL $wpdb;
 
 		return $wpdb->get_var("SELECT count(*) FROM wp_posts WHERE post_content LIKE '%<flickr%>%</flickr>%';") + $wpdb->get_var("SELECT count(*) FROM wp_options WHERE option_name LIKE 'flickr_%' AND option_name NOT LIKE 'flickr_tag_%';");
 	}
 
-	public function processRequest() {
+	function processRequest() {
 		// migration of old data to new format
 		if(isset($this->request['migrate']) && $this->migrateNeeded()) { 
 			$this->migrate();
@@ -237,14 +237,14 @@ class FlickrTagAdmin extends FlickrTagCommon {
 		}
 	}
 
-	public function getAdminHead() {
+	function getAdminHead() {
 	?>
 		<link href="/wp-content/plugins/flickr-tag/css/flickrTagAdmin.css" type="text/css" rel="stylesheet"/>
 		<link href="/wp-content/plugins/flickr-tag/css/flickrTag.css" type="text/css" rel="stylesheet"/>
 	<?php
 	}
 
-	public function getAdminContent() {
+	function getAdminContent() {
 		$this->processRequest();
 
 		if($this->migrateNeeded())
@@ -359,7 +359,7 @@ class FlickrTagAdmin extends FlickrTagCommon {
 	<?php
 	}
 
-	public function getUserContent() {
+	function getUserContent() {
 	?>
 		<script type="text/javascript" src="/wp-content/plugins/flickr-tag/js/flickrTag.js"></script>
 
