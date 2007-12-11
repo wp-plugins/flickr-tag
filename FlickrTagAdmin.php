@@ -28,8 +28,8 @@ class FlickrTagAdmin extends FlickrTagCommon {
 		add_action("admin_head", array($this, "getAdminHead"));
 	}
 
+	// find only request parameters that belong to us
 	function getRequest() {
-		// find only request parameters that belong to us
 		foreach($_REQUEST as $key=>$value) {
 			if(substr($key, 0, 11) == "flickr_tag_")
 				$this->request[substr($key, 11)] = $value;
@@ -367,27 +367,27 @@ class FlickrTagAdmin extends FlickrTagCommon {
 			Choose a set from the list below to insert into your post:
 
 			<p style="padding-left: 30px;">
-				<?php
-					$params = array(
-						'method'	=> 'flickr.photosets.getList',
-						'format'	=> 'php_serial'
-					);
+			<?php
+				$params = array(
+					'method'	=> 'flickr.photosets.getList',
+					'format'	=> 'php_serial'
+				);
 
-					$r = $this->apiCall($params, false, true);
+				$r = $this->apiCall($params, false, true);
 
-					if($r) {
-						echo '<select id="flickr_tag_sets">';
+				if($r) {
+					echo '<select id="flickr_tag_sets">';
 
-						foreach($r['photosets']['photoset'] as $number=>$photoset) 
-							echo '<option value="' . $photoset['id'] . '">' . $photoset['title']['_content'] . ' (' . $photoset['photos'] . ' photo' . (($photoset['photos'] != 1) ? "s" : "") . ')</option>';
+					foreach($r['photosets']['photoset'] as $number=>$photoset) 
+						echo '<option value="' . $photoset['id'] . '">' . $photoset['title']['_content'] . ' (' . $photoset['photos'] . ' photo' . (($photoset['photos'] != 1) ? "s" : "") . ')</option>';
 						
-						echo '</select>';
+					echo '</select>';
 
-						echo '<input class="button" type="button" value="Send to editor &raquo;" onClick="flickrTag_insertIntoEditor(\'[flickr]set:\' + document.getElementById(\'flickr_tag_sets\').value + \'[/flickr]\');">';
-					} else { 
-						echo "<em>No sets were found on Flickr. Did you <a href='options-general.php?page=FlickrTagAdmin.php' target='_top'>setup the plugin</a> yet?</em>";
-					}
-				?>
+					echo '<input class="button" type="button" value="Send to editor &raquo;" onClick="flickrTag_insertIntoEditor(\'[flickr]set:\' + document.getElementById(\'flickr_tag_sets\').value + \'[/flickr]\');">';
+				} else { 
+					echo "<em>No sets were found on Flickr. Did you <a href='options-general.php?page=FlickrTagAdmin.php' target='_top'>setup the plugin</a> yet?</em>";
+				}
+			?>
 			</p>
 
 			<p>
@@ -395,26 +395,26 @@ class FlickrTagAdmin extends FlickrTagCommon {
 			</p>
 
 			<p style="padding-left: 30px;">
-				<?php
-                	                $params = array(
-                        	                'method'        => 'flickr.people.getPublicPhotos',
-                                	        'format'        => 'php_serial',
-                                        	'per_page'      => '48',
-	                                        'user_id'       => $this->optionGet("nsid")
-        	                        );
+			<?php
+				$params = array(
+                                        'method'        => 'flickr.people.getPublicPhotos',
+                               	        'format'        => 'php_serial',
+                                       	'per_page'      => '48',
+                                        'user_id'       => $this->optionGet("nsid")
+       	                        );
 
-					$r = $this->apiCall($params, false, true);
+				$r = $this->apiCall($params, false, true);
 
-					if($r) {
-						foreach($r['photos']['photo'] as $number=>$photo) {
-							$img_url = "http://farm" . $photo['farm'] . ".static.flickr.com/" . $photo['server'] . "/" . $photo['id'] . "_" . $photo['secret'] . "_s.jpg";
+				if($r) {
+					foreach($r['photos']['photo'] as $number=>$photo) {
+						$img_url = "http://farm" . $photo['farm'] . ".static.flickr.com/" . $photo['server'] . "/" . $photo['id'] . "_" . $photo['secret'] . "_s.jpg";
 	
-							echo '<a href="#" onClick="flickrTag_insertIntoEditor(\'[flickr]photo:' . $photo['id'] . '[/flickr]\'); return false;" style="text-decoration: none; border: none;"><img src="' . $img_url . '" alt="" style="padding-right: 5px; padding-bottom: 5px;"/></a>';
-						}
-					} else {
-						echo "<em>No photos were found on Flickr. Did you <a href='options-general.php?page=FlickrTagAdmin.php' target='_top'>setup the plugin</a> yet?</em>";
-					}	
-				?>
+						echo '<a href="#" onClick="flickrTag_insertIntoEditor(\'[flickr]photo:' . $photo['id'] . '[/flickr]\'); return false;" style="text-decoration: none; border: none;"><img src="' . $img_url . '" alt="" style="padding-right: 5px; padding-bottom: 5px;"/></a>';
+					}
+				} else {
+					echo "<em>No photos were found on Flickr. Did you <a href='options-general.php?page=FlickrTagAdmin.php' target='_top'>setup the plugin</a> yet?</em>";
+				}	
+			?>
 			</p>
 
 			<p>

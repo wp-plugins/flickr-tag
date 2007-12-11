@@ -144,7 +144,7 @@ class FlickrTagEngine extends FlickrTagCommon {
 					'format'		=> 'php_serial'
 				);
 
-				// the ampersand implies an "and" relationship between tags--otherwise an "or" relationship
+				// the ampersand implies an "and" relationship between tags--otherwise an "or" relationship is assumed
 				if(strpos($tags, "+") > 0)
 					$params['tag_mode'] = "all";
 				else
@@ -160,7 +160,7 @@ class FlickrTagEngine extends FlickrTagCommon {
 					$r = $this->apiCall($params2);
 
 					if(! $r)
-						return $this->error("Call to resolve user '" . $user . "' to NSID failed.");
+						return $this->error("Call to resolve user '" . $user . "' to an NSID failed.");
 					else
 						$params['user_id'] = $r['user']['nsid'];
 				}
@@ -216,7 +216,6 @@ class FlickrTagEngine extends FlickrTagCommon {
 				return $this->error("Bad call to get metadata for photo '" . $photo['id'] . "'.");
                                 
 			$img_url = "http://farm" . $photo['farm'] . ".static.flickr.com/" . $photo['server'] . "/" . $photo['id'] . "_" . $photo['secret'] . $size . ".jpg";
-
 			$a_url = "http://www.flickr.com/photos/" . $r['photo']['owner']['nsid'] . "/" . $photo['id'] . "/";
 
 			if($mode == "set")
