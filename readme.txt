@@ -43,9 +43,9 @@ A: <li>Ability to override default photo size.
 
 Special thanks to the following for their contributions and bug reports:
 
-Jon Baker
-Niki Gorchilov
-Michael Fruehmann
-Tyson Cecka
+Jon Baker<br/>
+Niki Gorchilov<br/>
+Michael Fruehmann<br/>
+Tyson Cecka<br/>
 
 
