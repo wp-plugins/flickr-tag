@@ -4,7 +4,7 @@ Plugin Name: Flickr Tag
 Description: Insert Flickr sets, tags or individual photos in your posts by using a special tag.
 Author: Jeff Maki
 Author URI: http://www.webopticon.com
-Version: 2.0.0-RC
+Version: 2.0.0-RC2
 
 Copyright 2007 Jeffrey Maki (email: crimesagainstlogic@gmail.com)
 
