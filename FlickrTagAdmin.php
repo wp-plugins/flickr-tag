@@ -114,9 +114,9 @@ class FlickrTagAdmin extends FlickrTagCommon {
 	}
 
 	function migrate() {
-		GLOBAL $wpdb;
+		GLOBAL $wpdb, $table_prefix;
 
-		$migrate_posts = $wpdb->get_results("SELECT * FROM wp_posts WHERE post_content LIKE '%<flickr%>%</flickr>%';");
+		$migrate_posts = $wpdb->get_results("SELECT * FROM " . $table_prefix . "posts WHERE post_content LIKE '%<flickr%>%</flickr>%';");
 
 		foreach($migrate_posts as $post) {
 			$id = $post->ID;
@@ -151,13 +151,13 @@ class FlickrTagAdmin extends FlickrTagCommon {
 			$wpdb->query("UPDATE wp_posts SET post_content='" . $wpdb->escape($content) . "' WHERE id=$id;");
 		}
 
-		$migrate_options = $wpdb->get_results("DELETE FROM wp_options WHERE option_name LIKE 'flickr_%';");
+		$migrate_options = $wpdb->get_results("DELETE FROM " . $table_prefix . "options WHERE option_name LIKE 'flickr_%';");
 	}
 
 	function migrateNeeded() {
-		GLOBAL $wpdb;
+		GLOBAL $wpdb, $table_prefix;
 
-		return $wpdb->get_var("SELECT count(*) FROM wp_posts WHERE post_content LIKE '%<flickr%>%</flickr>%';") + $wpdb->get_var("SELECT count(*) FROM wp_options WHERE option_name LIKE 'flickr_%' AND option_name NOT LIKE 'flickr_tag_%';");
+		return $wpdb->get_var("SELECT count(*) FROM " . $table_prefix . "posts WHERE post_content LIKE '%<flickr%>%</flickr>%';") + $wpdb->get_var("SELECT count(*) FROM " . $table_prefix . "options WHERE option_name LIKE 'flickr_%' AND option_name NOT LIKE 'flickr_tag_%';");
 	}
 
 	function processRequest() {
