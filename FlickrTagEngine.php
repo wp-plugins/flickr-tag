@@ -231,7 +231,7 @@ class FlickrTagEngine extends FlickrTagCommon {
 			$extra = str_replace("&#8217;", "\"", $extra);
 			$extra = str_replace("&#8221;", "\"", $extra);
 
-			$html .= '<a href="' . $a_url . '" class="flickr"><img src="' . $img_url . '" alt="" class="flickr_img ' . $this->optionGet($mode . '_size') . ' ' . $mode . '" ' . $extra . '"/></a>';
+			$html .= '<a href="' . $a_url . '" class="flickr"><img src="' . $img_url . '" alt="" class="flickr_img ' . $this->optionGet($mode . '_size') . ' ' . $mode . '" ' . $extra . '/></a>';
 		}
 
 		return $html;
