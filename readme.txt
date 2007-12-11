@@ -28,14 +28,14 @@ After installation, you'll have a new "Flickr" tab in the "glovebox" that appear
 
 == Frequently Asked Questions ==
 
-Q: What's new in 2.0?
-A: + Ability to override default photo size.
-   + Ability to override default photo count (sets, tags only).
-   + New tag syntax for compatability with the visual HTML editor.
-   + New OO architecture to make derivative code easier to write.
-   + (Untested) better internationalization around htmlentities().
-   + Increased compatability for ISPs that may not have libcurl enabled.
-   + Changed conjunction operator in tag queries from & to +.
+Q: What's new in 2.0?<br/>
+A: <li>Ability to override default photo size.
+   <li> Ability to override default photo count (sets, tags only).
+   <li> New tag syntax for compatability with the visual HTML editor.
+   <li> New OO architecture to make derivative code easier to write.
+   <li> (Untested) better internationalization around htmlentities().
+   <li> Increased compatability for ISPs that may not have libcurl enabled.
+   <li> Changed conjunction operator in tag queries from & to +.
 
 == Screenshots ==
 
