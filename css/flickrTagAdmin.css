@@ -1,0 +1,49 @@
+.header {
+	font-weight: bold;
+	border-bottom: 1px solid #CCCCCC;
+}
+
+.subheader {
+	font-style: italic;
+	padding-left: 20px;
+}
+
+.label {
+	float: left;	
+	text-align: right;
+		
+	width: 200px;
+
+	padding: 0px;
+	margin: 0px;
+	margin-right: 10px;
+	padding-top: 5px;
+}
+
+.more {
+	font-style: italic;
+	font-size: 75%;
+
+	width: 400px;
+	padding-left: 210px;
+	margin-bottom: 30px;
+}
+
+.current {
+	padding: 3px;
+	background-color: #FFFFDD;
+	border: 1px solid #EAD43E;
+}
+
+.disabled {
+	padding: 3px;
+	background-color: #EFEFEF;
+	border: 1px solid #C0C0C0;
+	color: #B0B0B0;
+}
+
+.disabled A {
+	color: #B0B0B0;
+	text-decoration: none;
+	cursor: default;
+}
