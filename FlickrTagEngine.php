@@ -226,10 +226,6 @@ class FlickrTagEngine extends FlickrTagCommon {
 			if($title)
 				$extra .= ' title="' . htmlentities($title, ENT_COMPAT, get_option("blog_charset")) . '"';
 
-			// FIXME HACK Hmm... how to fix this one right???
-			$extra = str_replace("&#8217;", "\"", $extra);
-			$extra = str_replace("&#8221;", "\"", $extra);
-
 			$html .= '<a href="' . $a_url . '" class="flickr"><img src="' . $img_url . '" alt="" class="flickr_img ' . $this->optionGet($mode . '_size') . ' ' . $mode . '" ' . $extra . '/></a>';
 		}
 

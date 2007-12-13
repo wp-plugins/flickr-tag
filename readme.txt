@@ -37,7 +37,8 @@ A: <ul>
    <li> (Untested) better internationalization around htmlentities().
    <li> Increased compatability for ISPs that may not have libcurl enabled.
    <li> Changed conjunction operator in tag queries from & to +.
-   <li> XHTML compliant tag generation.
+   <li> XHTML compliant HTML tag generation.
+   <li> wptexturize() bug.
    </ul>
 
 == Screenshots ==
