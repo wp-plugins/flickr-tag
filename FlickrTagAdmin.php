@@ -183,7 +183,8 @@ class FlickrTagAdmin extends FlickrTagCommon {
 				$this->optionSet("nsid", $r['auth']['user']['nsid']);
 
 				$this->optionSaveAll();
-			}
+			} else
+				echo $this->error("Error converting frob into token");
 					
 			header("Location: /wp-admin/options-general.php?page=" . basename(__FILE__));
 		} else
@@ -293,7 +294,7 @@ class FlickrTagAdmin extends FlickrTagCommon {
 
 			<?php
 				} else
-					echo $this->error("Error getting frob token from Flickr.");
+					echo $this->error("Error getting frob");
 			}
 			?>
 

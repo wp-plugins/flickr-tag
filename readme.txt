@@ -39,6 +39,7 @@ A: <ul>
    <li> Changed conjunction operator in tag queries from & to +.
    <li> XHTML compliant HTML tag generation.
    <li> wptexturize() bug.
+   <li> Better error reporting
    </ul>
 
 == Screenshots ==

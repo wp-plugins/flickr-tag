@@ -15,9 +15,22 @@ div.flickrTag_error p {
 	margin: 0px;
 	padding: 5px;
 	font-weight: bold;
+	word-wrap: break-word;
 }
 
 div.flickrTag_error {
 	background: #FFEFF7 none repeat scroll 0%;
 	border: 1px solid #CC6699;
+}
+
+div.flickrTag_error ul {
+	padding: 0px;
+	margin: 0px;
+	padding-left: 20px;
+}
+
+div.flickrTag_error li {
+	padding: 0px;
+	margin: 0px;
+	padding-bottom: 5px;
 }

@@ -23,6 +23,8 @@ define("FLICKR_TAG_API_KEY_SS", "2406fd6c36b852fd");
 define("FLICKR_TAG_CACHE_DIR", dirname(__FILE__) . "/cache");
 
 class FlickrTagCommon {
+	var $error_state = null;
+	
 	var $config = array(
 				"token" => null,
 				"nsid" => null,
@@ -157,15 +159,22 @@ class FlickrTagCommon {
 				$r = curl_exec($c);
 
 			} else	// no curl available... ugh!
-				$r = file_get_contents("http://api.flickr.com/services/rest/?" . implode('&', $encoded_params));
+				@$r = file_get_contents("http://api.flickr.com/services/rest/?" . implode('&', $encoded_params));
 
-			if(! $r)
-				$this->error("libcurl or URL fopen() wrappers were not found. Can't continue...");
+			if(! $r) {
+				if(function_exists("error_get_last"))
+					$this->error_state = error_get_last();
+				else
+					$this->error_state = array("message" => "libcurl or URL fopen() wrappers were not found!");
+
+				return null;
+			}
 
 		 	$o = unserialize($r);
 
 			if($o['stat'] != "ok") {
-//				echo var_dump($o);
+				$this->error_state = $o;
+				
 				return null;
 			}
 
@@ -182,6 +191,21 @@ class FlickrTagCommon {
 	}
 
 	function error($message) {
-	        return '<div class="flickrTag_error"><p>' . $message . '</p></div>';
+	        $s .= '<div class="flickrTag_error">';
+
+		$s .= '<p>Flickr Tag Error: ' . $message . '</p>';
+
+		if($this->error_state) {
+			$s .= "<p>Error state follows:</p><ul>";
+
+			foreach($this->error_state as $l=>$m)
+				$s .= "<li>" . $l . ": " . $m . "</li>";
+
+			$s .= "</ul>";
+		}
+
+		$s .= '</div>';
+
+		return $s;
 	}
 }

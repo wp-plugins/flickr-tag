@@ -139,12 +139,13 @@ class FlickrTagEngine extends FlickrTagCommon {
 
 				$params = array(
 					'method'		=> 'flickr.photos.search',
+
 					// the flickr API mandates tags be separated by a comma when using multiple tags
 					'tags'			=> str_replace("+", ",", $tags),
 					'format'		=> 'php_serial'
 				);
 
-				// the ampersand implies an "and" relationship between tags--otherwise an "or" relationship is assumed
+				// the plus implies an "and" relationship between tags--otherwise an "or" relationship is assumed
 				if(strpos($tags, "+") > 0)
 					$params['tag_mode'] = "all";
 				else
@@ -168,7 +169,7 @@ class FlickrTagEngine extends FlickrTagCommon {
 				$r = $this->apiCall($params);
 
 				if(! $r)
-					return $this->error("Call to display tags '" . $tags . "' failed.");
+					return $this->error("Call to display tag query '" . $tags . "' failed.");
 
 				return $this->renderPhotos($r['photos'], $mode, $tag_param, $size, $limit);
 
@@ -213,7 +214,7 @@ class FlickrTagEngine extends FlickrTagCommon {
 			$r = $this->apiCall($params);
 
 			if(! $r)
-				return $this->error("Bad call to get metadata for photo '" . $photo['id'] . "'.");
+				return $this->error("Call to get metadata for photo '" . $photo['id'] . "' failed.");
                                 
 			$img_url = "http://farm" . $photo['farm'] . ".static.flickr.com/" . $photo['server'] . "/" . $photo['id'] . "_" . $photo['secret'] . $size . ".jpg";
 			$a_url = "http://www.flickr.com/photos/" . $r['photo']['owner']['nsid'] . "/" . $photo['id'] . "/";
