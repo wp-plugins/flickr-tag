@@ -31,6 +31,8 @@ class FlickrTagCommon {
 
 				"cache_ttl" => 604800,
 
+				"link_action" => "flickr",
+
 				"photo_size" => "small",
 				"photo_tooltip" => "description",
 

@@ -25,16 +25,27 @@ class FlickrTagEngine extends FlickrTagCommon {
         }
 
 	function getPublicHead() {
+		if($this->optionGet('link_action') == "lightbox") {
 	?>
-		<script type="text/javascript" src="/wp-content/plugins/flickr-tag/js/yahoo.js"></script>
-		<script type="text/javascript" src="/wp-content/plugins/flickr-tag/js/dom.js"></script>
-		<script type="text/javascript" src="/wp-content/plugins/flickr-tag/js/event.js"></script>
-		<script type="text/javascript" src="/wp-content/plugins/flickr-tag/js/container.js"></script>
-		<script type="text/javascript" src="/wp-content/plugins/flickr-tag/js/utilities.js"></script>
+			<script type="text/javascript" src="/wp-content/plugins/flickr-tag/js/prototype.js"></script>
+			<script type="text/javascript" src="/wp-content/plugins/flickr-tag/js/scriptaculous.js?load=effects"></script>
+			<script type="text/javascript" src="/wp-content/plugins/flickr-tag/js/lightbox.js"></script>
 
-		<script type="text/javascript" src="/wp-content/plugins/flickr-tag/js/autoTooltips.js"></script>
-		<link href="/wp-content/plugins/flickr-tag/css/autoTooltips.css" type="text/css" rel="stylesheet"/>
+			<link rel="stylesheet" href="/wp-content/plugins/flickr-tag/css/lightbox.css" type="text/css" media="screen" />
+	<?
+		} else {
+	?>
+			<script type="text/javascript" src="/wp-content/plugins/flickr-tag/js/yahoo.js"></script>
+			<script type="text/javascript" src="/wp-content/plugins/flickr-tag/js/dom.js"></script>
+			<script type="text/javascript" src="/wp-content/plugins/flickr-tag/js/event.js"></script>
+			<script type="text/javascript" src="/wp-content/plugins/flickr-tag/js/container.js"></script>
+			<script type="text/javascript" src="/wp-content/plugins/flickr-tag/js/utilities.js"></script>
 
+			<script type="text/javascript" src="/wp-content/plugins/flickr-tag/js/autoTooltips.js"></script>
+			<link href="/wp-content/plugins/flickr-tag/css/autoTooltips.css" type="text/css" rel="stylesheet"/>
+	<? 
+		}
+	?>
 		<link href="/wp-content/plugins/flickr-tag/css/flickrTag.css" type="text/css" rel="stylesheet"/>
 	<?php
 	}
@@ -202,6 +213,8 @@ class FlickrTagEngine extends FlickrTagCommon {
 		if(! $i)
 			return;
 
+		$lightbox_uid = md5(rand() . time());
+
 		foreach($i as $photo) {
 			$extra = $tag_param;
 
@@ -216,18 +229,44 @@ class FlickrTagEngine extends FlickrTagCommon {
 			if(! $r)
 				return $this->error("Call to get metadata for photo '" . $photo['id'] . "' failed.");
                                 
-			$img_url = "http://farm" . $photo['farm'] . ".static.flickr.com/" . $photo['server'] . "/" . $photo['id'] . "_" . $photo['secret'] . $size . ".jpg";
-			$a_url = "http://www.flickr.com/photos/" . $r['photo']['owner']['nsid'] . "/" . $photo['id'] . "/";
 
-			if($mode == "set")
-				$a_url .= "in/set-" . $result['id'] . "/";
+			$thumbnail_img_url = "http://farm" . $photo['farm'] . ".static.flickr.com/" . $photo['server'] . "/" . $photo['id'] . "_" . $photo['secret'] . $size . ".jpg";
 
-			$title = $r['photo'][$this->optionGet($mode . '_tooltip')]['_content'];
+			$title = trim($r['photo'][$this->optionGet($mode . '_tooltip')]['_content']);
 
-			if($title)
-				$extra .= ' title="' . htmlentities($title, ENT_COMPAT, get_option("blog_charset")) . '"';
 
-			$html .= '<a href="' . $a_url . '" class="flickr"><img src="' . $img_url . '" alt="" class="flickr_img ' . $this->optionGet($mode . '_size') . ' ' . $mode . '" ' . $extra . '/></a>';
+			switch($this->optionGet("link_action")) {
+				case "lightbox":
+					$flickr_url = "http://www.flickr.com/photos/" . $r['photo']['owner']['nsid'] . "/" . $photo['id'] . "/" . (($mode == "set") ? "in/set-" . $result['id'] . "/" : "");
+					$a_url = "http://farm" . $photo['farm'] . ".static.flickr.com/" . $photo['server'] . "/" . $photo['id'] . "_" . $photo['secret'] . ".jpg";
+
+					$rel = "lightbox" . (($mode == "tag" || $mode == "set") ? "[" . $lightbox_uid . "]" : "");
+
+					$title .= ' <a href="' . $flickr_url . '">view&nbsp;on&nbsp;flickr&raquo;</a>';
+
+					$html .= '<a href="' . $a_url . '" class="flickr" title="' . htmlentities($title, ENT_COMPAT, get_option("blog_charset")) . '" rel="' . $rel . '"><img src="' . $thumbnail_img_url . '" alt="" class="flickr_img ' . $this->optionGet($mode . '_size') . ' ' . $mode . '" ' . $extra . '/></a>';
+
+					break;
+
+				case "flickr":
+					$a_url = "http://www.flickr.com/photos/" . $r['photo']['owner']['nsid'] . "/" . $photo['id'] . "/" . (($mode == "set") ? "in/set-" . $result['id'] . "/" : "");
+
+					if($title)
+						$extra .= ' title="' . htmlentities($title, ENT_COMPAT, get_option("blog_charset")) . '"';
+
+					$html .= '<a href="' . $a_url . '" class="flickr"><img src="' . $thumbnail_img_url . '" alt="" class="flickr_img ' . $this->optionGet($mode . '_size') . ' ' . $mode . '" ' . $extra . '/></a>';
+					
+					break;
+
+				case "none":
+				default:
+					if($title)
+						$extra .= ' title="' . htmlentities($title, ENT_COMPAT, get_option("blog_charset")) . '"';
+
+					$html .= '<img src="' . $thumbnail_img_url . '" alt="" class="flickr_img ' . $this->optionGet($mode . '_size') . ' ' . $mode . '" ' . $extra . '/>';
+
+					break;
+			}
 		}
 
 		return $html;

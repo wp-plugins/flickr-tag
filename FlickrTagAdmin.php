@@ -64,7 +64,7 @@ class FlickrTagAdmin extends FlickrTagCommon {
 			</select>
 		</p>
 
-		<p class="label">Tooltip Contents:</p>
+		<p class="label">Tooltip/Caption Contents:</p>
 		<p class="field">	
 			<select size=1 name="flickr_tag_<?php echo $entity; ?>_tooltip">
 				<option value="description" <?php if($this->request[$entity . '_tooltip'] == "description") echo "selected"; ?>>Photo Description</option>
@@ -300,6 +300,47 @@ class FlickrTagAdmin extends FlickrTagCommon {
 
 
 
+
+			<p class="header">Inline Photo Display Options</p>
+
+			<p class="subheader">(Single) Photos</p>
+			<?php
+				$this->getDisplayDefaultsOptionsHTML("photo");
+			?>
+
+			<p class="subheader">Sets</p>
+			<?php
+				$this->getDisplayDefaultsOptionsHTML("set");
+			?>
+
+			<p class="subheader">Tags</p>
+			<?php
+				$this->getDisplayDefaultsOptionsHTML("tag");
+			?>
+
+
+
+
+			<p class="header">Inline Photo Behavior Options</p>
+
+			<p class="label" style="height: 50px;">When clicked, inline photos:</p>
+			<p class="field">
+				<input type="radio" name="flickr_tag_link_action" value="flickr" <?php if($this->request['link_action'] == "flickr") echo "checked"; ?>> link to the photo's Flickr page.
+				<br/>
+				<input type="radio" name="flickr_tag_link_action" value="lightbox" <?php if($this->request['link_action'] == "lightbox") echo "checked"; ?>> display a larger version in a <a href="http://www.huddletogether.com/projects/lightbox2/" target="_new">Lightbox</a>.
+				<br/>
+				<input type="radio" name="flickr_tag_link_action" value="none" <?php if($this->request['link_action'] != "flickr" && $this->request['link_action'] != "lightbox") echo "checked"; ?>> do nothing
+			</p>
+
+			<p class="more">
+				This option controls what happens when a user clicks on an inline photo.
+ 
+				<strong>Note that if Lightbox display mode is selected, tooltips on inline photos are disabled--tooltip content is shown as a caption in the Lightbox.</strong> Sorry, both cannot be enabled at the same time due to technical limitations.
+			</p>
+
+
+
+
 			<p class="header">Caching</p>
 
 			<p class="label">Cache Lifetime:</p>
@@ -325,26 +366,6 @@ class FlickrTagAdmin extends FlickrTagCommon {
 			<p class="more">
 				If you have made changes on Flickr, but are not seeing these changes reflected on your blog, you may need to flush the Flickr cache. This will happen automatically after the cache lifetime period expires (set above).
 			</p>
-
-
-
-
-			<p class="header">Display Defaults</p>
-
-			<p class="subheader">Photos</p>
-			<?php
-				$this->getDisplayDefaultsOptionsHTML("photo");
-			?>
-
-			<p class="subheader">Sets</p>
-			<?php
-				$this->getDisplayDefaultsOptionsHTML("set");
-			?>
-
-			<p class="subheader">Tags</p>
-			<?php
-				$this->getDisplayDefaultsOptionsHTML("tag");
-			?>
 
 
 
