@@ -230,31 +230,28 @@ class FlickrTagEngine extends FlickrTagCommon {
 				return $this->error("Call to get metadata for photo '" . $photo['id'] . "' failed.");
                                 
 
-			$thumbnail_img_url = "http://farm" . $photo['farm'] . ".static.flickr.com/" . $photo['server'] . "/" . $photo['id'] . "_" . $photo['secret'] . $size . ".jpg";
+			$a_url = "http://www.flickr.com/photos/" . $r['photo']['owner']['nsid'] . "/" . $photo['id'] . "/" . (($mode == "set") ? "in/set-" . $result['id'] . "/" : "");
+			$img_url = "http://farm" . $photo['farm'] . ".static.flickr.com/" . $photo['server'] . "/" . $photo['id'] . "_" . $photo['secret'] . $size . ".jpg";
 
 			$title = trim($r['photo'][$this->optionGet($mode . '_tooltip')]['_content']);
 
 
 			switch($this->optionGet("link_action")) {
 				case "lightbox":
-					$flickr_url = "http://www.flickr.com/photos/" . $r['photo']['owner']['nsid'] . "/" . $photo['id'] . "/" . (($mode == "set") ? "in/set-" . $result['id'] . "/" : "");
+					$title .= ' <a href="' . $a_url . '">view&nbsp;on&nbsp;flickr&raquo;</a>';
 					$a_url = "http://farm" . $photo['farm'] . ".static.flickr.com/" . $photo['server'] . "/" . $photo['id'] . "_" . $photo['secret'] . ".jpg";
 
 					$rel = "lightbox" . (($mode == "tag" || $mode == "set") ? "[" . $lightbox_uid . "]" : "");
 
-					$title .= ' <a href="' . $flickr_url . '">view&nbsp;on&nbsp;flickr&raquo;</a>';
-
-					$html .= '<a href="' . $a_url . '" class="flickr" title="' . htmlentities($title, ENT_COMPAT, get_option("blog_charset")) . '" rel="' . $rel . '"><img src="' . $thumbnail_img_url . '" alt="" class="flickr_img ' . $this->optionGet($mode . '_size') . ' ' . $mode . '" ' . $extra . '/></a>';
+					$html .= '<a href="' . $a_url . '" class="flickr" title="' . htmlentities($title, ENT_COMPAT, get_option("blog_charset")) . '" rel="' . $rel . '"><img src="' . $img_url . '" alt="" class="flickr_img ' . $this->optionGet($mode . '_size') . ' ' . $mode . '" ' . $extra . '/></a>';
 
 					break;
 
 				case "flickr":
-					$a_url = "http://www.flickr.com/photos/" . $r['photo']['owner']['nsid'] . "/" . $photo['id'] . "/" . (($mode == "set") ? "in/set-" . $result['id'] . "/" : "");
-
 					if($title)
 						$extra .= ' title="' . htmlentities($title, ENT_COMPAT, get_option("blog_charset")) . '"';
 
-					$html .= '<a href="' . $a_url . '" class="flickr"><img src="' . $thumbnail_img_url . '" alt="" class="flickr_img ' . $this->optionGet($mode . '_size') . ' ' . $mode . '" ' . $extra . '/></a>';
+					$html .= '<a href="' . $a_url . '" class="flickr"><img src="' . $img_url . '" alt="" class="flickr_img ' . $this->optionGet($mode . '_size') . ' ' . $mode . '" ' . $extra . '/></a>';
 					
 					break;
 
@@ -263,7 +260,7 @@ class FlickrTagEngine extends FlickrTagCommon {
 					if($title)
 						$extra .= ' title="' . htmlentities($title, ENT_COMPAT, get_option("blog_charset")) . '"';
 
-					$html .= '<img src="' . $thumbnail_img_url . '" alt="" class="flickr_img ' . $this->optionGet($mode . '_size') . ' ' . $mode . '" ' . $extra . '/>';
+					$html .= '<img src="' . $img_url . '" alt="" class="flickr_img ' . $this->optionGet($mode . '_size') . ' ' . $mode . '" ' . $extra . '/>';
 
 					break;
 			}

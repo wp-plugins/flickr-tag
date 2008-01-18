@@ -329,7 +329,7 @@ class FlickrTagAdmin extends FlickrTagCommon {
 				<br/>
 				<input type="radio" name="flickr_tag_link_action" value="lightbox" <?php if($this->request['link_action'] == "lightbox") echo "checked"; ?>> display a larger version in a <a href="http://www.huddletogether.com/projects/lightbox2/" target="_new">Lightbox</a>.
 				<br/>
-				<input type="radio" name="flickr_tag_link_action" value="none" <?php if($this->request['link_action'] != "flickr" && $this->request['link_action'] != "lightbox") echo "checked"; ?>> do nothing
+				<input type="radio" name="flickr_tag_link_action" value="none" <?php if($this->request['link_action'] != "flickr" && $this->request['link_action'] != "lightbox") echo "checked"; ?>> do nothing.
 			</p>
 
 			<p class="more">
