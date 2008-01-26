@@ -5,7 +5,7 @@ Plugin URI: http://www.webopticon.com/archives/148
 Description: Insert Flickr sets, tags or individual photos in your posts by using a special tag.
 Author: Jeff Maki
 Author URI: http://www.webopticon.com/about
-Version: 2.1.0
+Version: 2.1.1
 
 Copyright 2007 Jeffrey Maki (email: crimesagainstlogic@gmail.com)
 
