@@ -149,7 +149,10 @@ class FlickrTagCommon {
 
 		// cache miss: make request
 		} else {
-			@$c = curl_init();
+			$c = null;
+
+			if(function_exists('curl_init'))
+				$c = curl_init();
 
 			if($c) {
 				curl_setopt($c, CURLOPT_URL, "http://api.flickr.com/services/rest/");

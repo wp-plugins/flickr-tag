@@ -153,7 +153,8 @@ class FlickrTagEngine extends FlickrTagCommon {
 
 					// the flickr API mandates tags be separated by a comma when using multiple tags
 					'tags'			=> str_replace("+", ",", $tags),
-					'format'		=> 'php_serial'
+					'format'		=> 'php_serial',
+					'sort'			=> 'relevance'
 				);
 
 				// the plus implies an "and" relationship between tags--otherwise an "or" relationship is assumed
