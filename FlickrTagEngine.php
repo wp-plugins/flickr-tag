@@ -1,5 +1,5 @@
 <?php
-/*
+/* 
 Copyright 2007 Jeffrey Maki (email: crimesagainstlogic@gmail.com)
 
 This program is free software; you can redistribute it and/or modify
