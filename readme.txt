@@ -35,20 +35,21 @@ After installation, you'll have a new "Flickr" tab in the "glovebox" that appear
 
 == Frequently Asked Questions ==
 
-= What's new in 2.0? =
+= What's new in 2.1? =
+* Configurable link behavior: lightbox, tooltip or none.
+* Tag queries are sorted by "relevance". 
 
-<ul>
-<li>Ability to override default photo size.
-<li> Ability to override default photo count (sets, tags only). 
-<li> New tag syntax for compatability with the visual HTML editor.
-<li> New OO architecture to make derivative code easier to write.
-<li> (Untested) better internationalization around htmlentities().
-<li> Increased compatability for ISPs that may not have libcurl enabled.
-<li> Changed conjunction operator in tag queries from & to +.
-<li> XHTML compliant HTML tag generation.
-<li> wptexturize() bug.
-<li> Better error reporting
-</ul>
+= What's new in 2.0? =
+* Ability to override default photo size.
+* Ability to override default photo count (sets, tags only). 
+* New tag syntax for compatability with the visual HTML editor.
+* New OO architecture to make derivative code easier to write.
+* (Untested) better internationalization around htmlentities().
+* Increased compatability for ISPs that may not have libcurl enabled.
+* Changed conjunction operator in tag queries from & to +.
+* XHTML compliant HTML tag generation.
+* wptexturize() bug.
+* Better error reporting
 
 == Screenshots ==
 
