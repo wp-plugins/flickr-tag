@@ -27,9 +27,9 @@ This plugin mostly follows the [standard WordPress installation method][]:
 
 1. Activate the plugin in your WordPress plugins control panel.
 
-1. Go to the "Options" section, then choose "Flickr Tag" to configure the plugin. 
+1. Go to the "Options" admin page, then choose "Flickr Tag" to configure the plugin. 
 
-After installation, you'll have a new "Flickr" tab in the "glovebox" that appears when you edit/write posts. Use it to insert a favorite, or a set. Or, use the "flickr" tag (syntax outlined in the "glovebox"). 
+After installation, you'll have a new "Flickr" tab in the "glovebox" that appears when you edit/write posts. Use it to insert a favorite, or a set. Or, use the "flickr" tag (syntax outlined in the glovebox). 
 
 [standard WordPress installation method]: http://codex.wordpress.org/Managing_Plugins#Installing_Plugins
 
@@ -49,7 +49,7 @@ After installation, you'll have a new "Flickr" tab in the "glovebox" that appear
 * Changed conjunction operator in tag queries from & to +.
 * XHTML compliant HTML tag generation.
 * wptexturize() bug.
-* Better error reporting
+* Better (more verbose) error reporting.
 
 == Screenshots ==
 
