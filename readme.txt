@@ -19,15 +19,19 @@ My solution was to write my own plugin.
 
 == Installation ==
 
+This plugin mostly follows the [standard WordPress installation method][]:
+
 1. Uncompress the downloaded archive in [WordPress install root]/wp-content/plugins.
 
-2. Make sure the cache directory ([WordPress install root]/wp-content/plugins/flickr-tag/cache) is writable by the webserver. 
+1. Make sure the cache directory ([WordPress install root]/wp-content/plugins/flickr-tag/cache) is writable by the webserver. 
 
-3. Activate the plugin in your WordPress plugins control panel.
+1. Activate the plugin in your WordPress plugins control panel.
 
-4. Go to the "Options" section, then choose "Flickr Tag" to configure the plugin. 
+1. Go to the "Options" section, then choose "Flickr Tag" to configure the plugin. 
 
 After installation, you'll have a new "Flickr" tab in the "glovebox" that appears when you edit/write posts. Use it to insert a favorite, or a set. Or, use the "flickr" tag (syntax outlined in the "glovebox"). 
+
+[standard WordPress installation method]: http://codex.wordpress.org/Managing_Plugins#Installing_Plugins
 
 == Frequently Asked Questions ==
 
@@ -48,8 +52,8 @@ After installation, you'll have a new "Flickr" tab in the "glovebox" that appear
 
 == Screenshots ==
 
-1. The plugin is easily configured through the admin panel. Be sure to visit this page upon initial installation to authenticate to Flickr.
-2. A new "Flickr" tab is available when writing blog entries. It provides an easy way to insert a set or recent photo from your photostream; it also shows the syntax of the "flickr" tag. For users with wordpress accounts, their OpenID associations are managed through the admin panel.
+1. The plugin is easily configured through the admin panel. Be sure to visit this admin page upon initial installation to authenticate to Flickr.
+2. A new "Flickr" tab is available when writing blog entries. It provides an easy way to insert a set or recent photo from your photostream; it also shows the syntax of the "flickr" tag. 
 3. An example of use. The plugin allows photos to be linked to Flickr, showing the description of the photo in a tooltip (as shown above), or the plugin can be configured to show a larger version of the photo in a [Lightbox][]. 
 
 [Lightbox]: http://www.huddletogether.com/projects/lightbox2/
