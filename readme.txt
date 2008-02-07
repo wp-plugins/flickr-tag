@@ -9,10 +9,13 @@ Insert Flickr sets, tags or individual photos in your posts by using a special t
 
 == Description ==
 
-When I started using WordPress for webopticon.com, I had a hard time finding a Flickr plugin that didn't download all the photos onto my server, have them appear in a separate gallery, or otherwise look totally 
-kitsch. I just wanted something simple. I wanted thumbnails to show, and I wanted to be able to put them "inline" in my posts. Keep the photos and discussion on Flickr, as far as I'm concerned. I couldn't find anybody to share my design goals.
+When I started using WordPress for [webopticon.com][], I had a hard time finding a [Flickr][] plugin that didn't download all 
+the photos onto my server, have them appear in a separate gallery, or otherwise look totally kitsch. I just wanted something simple. I wanted thumbnails to show, and I wanted to be able to put them "inline" in my posts. Keep the photos and discussion on Flickr, as far as I'm concerned. I couldn't find anybody to share my design goals.
 
 My solution was to write my own plugin.
+
+[webopticon.com]: http://www.webopticon.com
+[Flickr]: http://www.flickr.com
 
 == Installation ==
 
@@ -43,6 +46,12 @@ A: <ul>
    </ul>
 
 == Screenshots ==
+
+1. The plugin is easily configured through the admin panel. Be sure to visit this page upon initial installation to authenticate to Flickr.
+2. A new "Flickr" tab is available when writing blog entries. It provides an easy way to insert a set or recent photo from your photostream; it also shows the syntax of the "flickr" tag. For users with wordpress accounts, their OpenID associations are managed through the admin panel.
+3. An example of use. The plugin allows photos to be linked to Flickr, showing the description of the photo in a tooltip (as shown above), or the plugin can be configured to show a larger version of the photo in a [Lightbox][]. 
+
+[Lightbox]: http://www.huddletogether.com/projects/lightbox2/
 
 == Special Thanks ==
 
