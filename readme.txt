@@ -1,6 +1,6 @@
 === Plugin Name ===
 Contributors: crimesagainstlogic
-Tags: flickr, thumbnails, tag, sets, photos, lightbox
+Tags: flickr, thumbnails, tag, sets, photos, lightbox, images
 Requires at least: 2.2.1
 Tested up to: 2.2.1
 Stable tag: trunk
