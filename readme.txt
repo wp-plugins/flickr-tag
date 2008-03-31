@@ -29,14 +29,14 @@ This plugin mostly follows the [standard WordPress installation method][]:
 
 1. Go to the "Plugins" admin page, then choose "Flickr Tag" to configure the plugin. 
 
-After installation, you'll have a new "Flickr" media icon that appears when you edit/write posts. Use it to insert a favorite, or a set. Or, use the "flickr" tag (syntax outlined in the popup). 
+After installation, you'll have a new "Flickr" media icon that appears when you edit/write posts. Use it to insert a favorite, or a set. Or, use the "flickr" tag (syntax outlined in the popup media window). 
 
 [standard WordPress installation method]: http://codex.wordpress.org/Managing_Plugins#Installing_Plugins
 
 == Frequently Asked Questions ==
 
 = What's new in 2.2? =
-* Compatability with 2.5: shortcode API and media button integration
+* Compatability with 2.5: shortcode API and media button integration.
 
 = What's new in 2.1? =
 * Configurable link behavior: lightbox, tooltip or none.
