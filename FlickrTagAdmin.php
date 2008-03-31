@@ -305,11 +305,11 @@ class FlickrTagAdmin extends FlickrTagCommon {
 					When clicked, photos
 				</th>
 				<td>
-					<input type="radio" name="flickr_tag_link_action" value="flickr" <?php if($this->request['link_action'] == "flickr") echo "checked"; ?>> link to the photo's Flickr page.
+					<input type="radio" name="flickr_tag_link_action" value="flickr" <?php if($this->request['link_action'] == "flickr") echo "checked"; ?>> Link to the photo's Flickr page.
 					<br/>
-					<input type="radio" name="flickr_tag_link_action" value="lightbox" <?php if($this->request['link_action'] == "lightbox") echo "checked"; ?>> display a larger version in a <a href="http://www.huddletogether.com/projects/lightbox2/" target="_new">Lightbox</a>.
+					<input type="radio" name="flickr_tag_link_action" value="lightbox" <?php if($this->request['link_action'] == "lightbox") echo "checked"; ?>> Display a larger version in a <a href="http://www.huddletogether.com/projects/lightbox2/" target="_new">Lightbox</a>.
 					<br/>
-					<input type="radio" name="flickr_tag_link_action" value="none" <?php if($this->request['link_action'] != "flickr" && $this->request['link_action'] != "lightbox") echo "checked"; ?>> do nothing.
+					<input type="radio" name="flickr_tag_link_action" value="none" <?php if($this->request['link_action'] != "flickr" && $this->request['link_action'] != "lightbox") echo "checked"; ?>> Do nothing.
 
 					<p class="more">
 						<strong>Note that if Lightbox display mode is selected, tooltips on inline photos are disabled--tooltip content is shown as a caption in the Lightbox.</strong> Sorry, both cannot be enabled at the same time due to technical limitations.
@@ -405,7 +405,7 @@ class FlickrTagAdmin extends FlickrTagCommon {
 						
 			$html .= '</select>';
 
-			$html .= '<input class="button" type="button" value="Send to editor &raquo;" onClick="flickrTag_insertIntoEditor(\'[flickr]set:\' + document.getElementById(\'flickr_tag_sets\').value + \'[/flickr]\');">';
+			$html .= '<input class="button" type="button" value="Insert" onClick="flickrTag_insertIntoEditor(\'[flickr]set:\' + document.getElementById(\'flickr_tag_sets\').value + \'[/flickr]\');">';
 		} else 
 			$html .= $this->error("API call failed to get available sets.");
 
@@ -439,7 +439,7 @@ class FlickrTagAdmin extends FlickrTagCommon {
 	function getIFrameContent_Syntax() {
 		$html = <<<EOF
 
-		<strong>Flickr Tag Syntax</strong>
+		<strong>Usage</strong>
 
 		<p style="font-family: courier; padding: 3px; background-color: #EFEFEF;">
 			[flickr <em>[params]</em>]set:set id<em>[(size[,limit])]</em>[/flickr] or <br/>
@@ -447,13 +447,13 @@ class FlickrTagAdmin extends FlickrTagCommon {
 			[flickr <em>[params]</em>]photo:photo id<em>[(size[,limit])]</em>[/flickr] <br/>
 		</p>
 
+		<strong>Notes</strong>
+
 		<p>
 			Any parameters (<em>[params]</em>) you add to the flickr tag (e.g. "style" or "alt") are added to the inserted image tag(s). If no mode is provided, "photo" is assumed (depricated). 
 		<p>
 
-		<p>
-			<em>Examples of use:</em>
-		</p>
+		<strong>Examples</strong>
 
 		<p>
 			To show "medium" photos tagged with "railcar" OR "train" from anyone, use:
