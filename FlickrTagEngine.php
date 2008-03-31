@@ -21,7 +21,7 @@ class FlickrTagEngine extends FlickrTagCommon {
         function FlickrTagEngine() {
                 parent::FlickrTagCommon();
 
-		add_shortcode('flickr', array($e, "flickrShortcodeHandler"));
+		add_shortcode('flickr', array($this, "flickrShortcodeHandler"));
 
 		add_action('wp_head', array($this, "getPublicHead"));
         }
