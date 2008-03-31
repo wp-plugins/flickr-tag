@@ -36,7 +36,10 @@ After installation, you'll have a new "Flickr" media icon that appears when you 
 == Frequently Asked Questions ==
 
 = What's new in 2.2? =
-* Compatability with 2.5: shortcode API and media button integration.
+* Compatability with 2.5.
+* Config page moved to "Plugins" admin page.
+* Use of Shortcode API.
+* Added new media button and tabbed popup interface.
 
 = What's new in 2.1? =
 * Configurable link behavior: lightbox, tooltip or none.
