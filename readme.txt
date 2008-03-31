@@ -14,6 +14,8 @@ the photos onto my server, have them appear in a separate gallery, or otherwise 
 
 My solution was to write my own plugin.
 
+<strong>Please note the version requirements on this plugin--it requires version 2.5!</strong>
+
 [webopticon.com]: http://www.webopticon.com
 [Flickr]: http://www.flickr.com
 
@@ -40,6 +42,7 @@ After installation, you'll have a new "Flickr" media icon that appears when you 
 * Config page moved to "Plugins" admin page.
 * Use of Shortcode API.
 * Added new media button and tabbed popup interface.
+* Removed tag syntax migration tool--therefore, if upgrading from pre-2.1, you must upgrade to 2.1 before you upgrade to 2.2! 
 
 = What's new in 2.1? =
 * Configurable link behavior: lightbox, tooltip or none.
