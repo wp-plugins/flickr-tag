@@ -1,6 +1,6 @@
 <?php
 /*
-Copyright 2007 Jeffrey Maki (email: crimesagainstlogic@gmail.com)
+Copyright 2008 Jeffrey Maki (email: crimesagainstlogic@gmail.com)
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -25,7 +25,16 @@ class FlickrTagAdmin extends FlickrTagCommon {
 
 		$this->getRequest();
 
-		add_action("admin_head", array($this, "getAdminHead"));
+        	add_action("admin_menu", array($this, "getAdminMenu"));
+		add_action("admin_print_scripts", array($this, "getAdminHead"));
+        	
+		add_action('media_buttons_context', array($this, "getButtonContext"));
+
+		add_action("media_upload_tabs", array($this, "getMediaUploadTabs"), 99); 
+		add_action("media_upload_flickr_tag", array($this, "getFlickrUploadContent"));
+		add_action("media_upload_flickr_tag_syntax", array($this, "getFlickrUploadContent"));
+		add_action("media_upload_flickr_tag_set", array($this, "getFlickrUploadContent"));
+		add_action("media_upload_flickr_tag_recent", array($this, "getFlickrUploadContent"));
 	}
 
 	// find only request parameters that belong to us
@@ -36,56 +45,74 @@ class FlickrTagAdmin extends FlickrTagCommon {
 		}
 	}
 
-	// called by wordpress add_action()
-	function setupAdminMenu() {
-		add_options_page("Flickr Tag", "Flickr Tag", "administrator", basename(__FILE__), array($this, "getAdminContent"));
+	function getAdminMenu() {
+		add_submenu_page("plugins.php", "Flickr Tag", "Flickr Tag", "administrator", basename(__FILE__), array($this, "getAdminContent"));
 	}
 
-	// called by wordpress add_action()
-	function setupUserMenu() {
-		GLOBAL $post_id;
+	function getButtonContext($html) {
+	        global $post_ID, $temp_ID;
+        
+		return $html . '<a href="media-upload.php?post_id=' . (int)(0 == $post_ID ? $temp_ID : $post_ID) . '&amp;type=flickr_tag&amp;TB_iframe=true&amp;height=450&amp;width=640" class="thickbox" title="Add an image from Flickr"><img src="/wp-content/plugins/flickr-tag/images/flickr-button.gif"/></a>';
+	}
 
-		if(! $post_id)	// only show on post edit/create page
-			return array();
+	function getMediaUploadTabs($tabs) {
+		// do not change tabs for non-flickr-tag pages
+		if($_REQUEST['type'] != "flickr_tag")
+			return $tabs;
+		else
+			return array("flickr_tag_recent" => "Insert a Recent Photo", "flickr_tag_set" => "Insert a Set", "flickr_tag_syntax" => "Tag Syntax");
+	}
 
-		return array("flickr" => array("Flickr", "upload_files", array($this, "getUserContent"), null, null));
+	function getFlickrUploadContent() {
+		return wp_iframe(array($this, "getIFrameContent"));
 	}
 
 	function getDisplayDefaultsOptionsHTML($entity) {
 	?>
-		<p class="label">Photo Size:</p>
-		<p class="field">
-			<select size=1 name="flickr_tag_<?php echo $entity; ?>_size">
-				<option value="square" <?php if($this->request[$entity . '_size'] == "square") echo "selected"; ?>>Square (75 x 75 pixels)</option>
-				<option value="thumbnail" <?php if($this->request[$entity . '_size'] == "thumbnail") echo "selected"; ?>>Thumbnail (100 x 75 pixels)</option>
-				<option value="small" <?php if($this->request[$entity . '_size'] == "small") echo "selected"; ?>>Small (240 x 180 pixels)</option>
-				<option value="medium" <?php if($this->request[$entity . '_size'] == "medium") echo "selected"; ?>>Medium (500 x 375 pixels)</option>
-				<option value="large" <?php if($this->request[$entity . '_size'] == "large") echo "selected"; ?>>Large (1024 x 768 pixels)</option>
-			</select>
-		</p>
+		<table class="form-table">
+		<tbody>
+			<tr valign="top">
+			<th scope="row">
+				Thumbnail size
+			</th>
+			<td>
+				<select size=1 name="flickr_tag_<?php echo $entity; ?>_size">
+					<option value="square" <?php if($this->request[$entity . '_size'] == "square") echo "selected"; ?>>Square (75 x 75 pixels)</option>
+					<option value="thumbnail" <?php if($this->request[$entity . '_size'] == "thumbnail") echo "selected"; ?>>Thumbnail (100 x 75 pixels)</option>
+					<option value="small" <?php if($this->request[$entity . '_size'] == "small") echo "selected"; ?>>Small (240 x 180 pixels)</option>
+					<option value="medium" <?php if($this->request[$entity . '_size'] == "medium") echo "selected"; ?>>Medium (500 x 375 pixels)</option>
+					<option value="large" <?php if($this->request[$entity . '_size'] == "large") echo "selected"; ?>>Large (1024 x 768 pixels)</option>
+				</select>
+			</td>
+			</tr>
 
-		<p class="label">Tooltip/Caption Contents:</p>
-		<p class="field">	
-			<select size=1 name="flickr_tag_<?php echo $entity; ?>_tooltip">
-				<option value="description" <?php if($this->request[$entity . '_tooltip'] == "description") echo "selected"; ?>>Photo Description</option>
-				<option value="title" <?php if($this->request[$entity . '_tooltip'] == "title") echo "selected"; ?>>Photo Title</option>
-			</select>
-		</p>
+			<tr valign="top">
+			<th scope="row">
+				Tooltip/caption
+			</th>
+			<td>
+				<input type="radio" name="flickr_tag_<?php echo $entity; ?>_tooltip" value="description" <?php if($this->request[$entity . '_tooltip'] == "description") echo "checked"; ?>> Use the photo's description.
+				<br/>
+				<input type="radio" name="flickr_tag_<?php echo $entity; ?>_tooltip" value="title" <?php if($this->request[$entity . '_tooltip'] == "title") echo "checked"; ?>> Use the photo's title.
+			</td>
+			</tr>
 
 	<?php 
 		if($entity != "photo") { 
 	?>
-			<p class="label">Display Limit:</p>
-			<p class="field">
-				<input type="text" size=3 name="flickr_tag_<?php echo $entity; ?>_limit" value="<?php echo $this->request[$entity . '_limit']; ?>"> photo(s)
-			</p>
+			<tr valign="top">
+			<th scope="row">
+				Display a maximum of
+			</th>
+			<td>
+				<input type="text" size=3 name="flickr_tag_<?php echo $entity; ?>_limit" value="<?php echo $this->request[$entity . '_limit']; ?>"> photo(s).
+			</td>
+			</tr>
 	<?php 
 		}
 	?>
-
-		<p class="more">
-			The above options control how Flickr photos are displayed when using the Flickr tag mode "<?php echo $entity; ?>".
-		</p>
+		</tbody>
+		</table>		
 	<?php
 	}
 
@@ -99,9 +126,9 @@ class FlickrTagAdmin extends FlickrTagCommon {
 
 			$r = $this->apiCall($params, false, true);
 
-			if($r)
+			if($r) {
 				return $r;
-			else {
+			} else {
 				// bad token--erase it
 				$this->optionSet("token", null);
 				$this->optionSet("nsid", null);
@@ -113,60 +140,7 @@ class FlickrTagAdmin extends FlickrTagCommon {
 		return null;
 	}
 
-	function migrate() {
-		GLOBAL $wpdb, $table_prefix;
-
-		$migrate_posts = $wpdb->get_results("SELECT * FROM " . $table_prefix . "posts WHERE post_content LIKE '%<flickr%>%</flickr>%';");
-
-		foreach($migrate_posts as $post) {
-			$id = $post->ID;
-			$content = $post->post_content;
-
-			// FIXME use regexes?
-			while(true) {
-				$p = strpos($content, "<flickr");
-
-				if($p === false)
-					break;
-
-				$content = substr($content, 0, $p) . "[flickr" . substr($content, $p + 7);
-
-				$p2 = strpos($content, ">", $p);
-				$content[$p2] = "]";
-
-				$p4 = strpos($content, "</flickr>", $p2);
-
-				while(true) {
-					$p3 = strpos($content, "&", $p2);
-		
-					if(! $p3 || $p3 > $p4)
-						break;
-
-					$content[$p3] = "+";
-				}
-
-				$content = str_replace("</flickr>", "[/flickr]", $content);
-			}
-
-			$wpdb->query("UPDATE wp_posts SET post_content='" . $wpdb->escape($content) . "' WHERE id=$id;");
-		}
-
-		$migrate_options = $wpdb->get_results("DELETE FROM " . $table_prefix . "options WHERE option_name LIKE 'flickr_%';");
-	}
-
-	function migrateNeeded() {
-		GLOBAL $wpdb, $table_prefix;
-
-		return $wpdb->get_var("SELECT count(*) FROM " . $table_prefix . "posts WHERE post_content LIKE '%<flickr%>%</flickr>%';") + $wpdb->get_var("SELECT count(*) FROM " . $table_prefix . "options WHERE option_name LIKE 'flickr_%' AND option_name NOT LIKE 'flickr_tag_%';");
-	}
-
 	function processRequest() {
-		// migration of old data to new format
-		if(isset($this->request['migrate']) && $this->migrateNeeded()) { 
-			$this->migrate();
-
-		} else
-
 		// convert frob into token (auth. step 2)
 		if(isset($this->request['frob'])) { 
 			$params = array(
@@ -186,7 +160,7 @@ class FlickrTagAdmin extends FlickrTagCommon {
 			} else
 				echo $this->error("Error converting frob into token");
 					
-			header("Location: /wp-admin/options-general.php?page=" . basename(__FILE__));
+			header("Location: /wp-admin/plugins.php?page=" . basename(__FILE__));
 		} else
 
 		// logout
@@ -196,7 +170,7 @@ class FlickrTagAdmin extends FlickrTagCommon {
 
 			$this->optionSaveAll();
 
-			header("Location: /wp-admin/options-general.php?page=" . basename(__FILE__));
+			header("Location: /wp-admin/plugins.php?page=" . basename(__FILE__));
 		} else
 
 		// flush cache
@@ -242,138 +216,145 @@ class FlickrTagAdmin extends FlickrTagCommon {
 	?>
 		<link href="/wp-content/plugins/flickr-tag/css/flickrTagAdmin.css" type="text/css" rel="stylesheet"/>
 		<link href="/wp-content/plugins/flickr-tag/css/flickrTag.css" type="text/css" rel="stylesheet"/>
+
+		<script type="text/javascript" src="/wp-content/plugins/flickr-tag/js/flickrTag.js"></script>
+
+		<link rel='stylesheet' href='http://www.webopticon.com/wp-admin/css/media.css' type='text/css'/>
 	<?php
 	}
 
 	function getAdminContent() {
 		$this->processRequest();
-
-		if($this->migrateNeeded())
-			echo '<div class="updated fade"><p>To maximize compatability with Wordpress (and in response to user demand), this version of Flickr Tag changes the way the "flickr" tag works. Instead of "&lt;flickr&gt;", this version uses [flickr], with some other backward-compatable syntax changes. Some configuration options have also been renamed to avoid collision with future plugins that may also use Flickr.<p><strong>Would you like to <a href="/wp-admin/options-general.php?page=' . basename(__FILE__) . '&flickr_tag_migrate=true">migrate your posts and reset your settings</a> now?</strong> <em>It is recommended that you <a href="/wp-admin/export.php">backup your Wordpress database</a> before you do so.</em></p></div>';
-
 	?>
 		<div class="wrap">
-			<form action="" method="post">
 			<h2>Flickr Tag Plugin</h2>
 
+			<form action="" method="post">
 
+			<h3>Authentication</h3>
 
-			<p class="header">Authentication</p>
-			<?php
-				$current_user = $this->getCurrentUser();
+			<table class="form-table">
+			<tbody>
+				<tr valign="top">
+				<td>
+				<?php
+					$current_user = $this->getCurrentUser();
 
-				if($current_user) {
-					echo 'Currently logged in to Flickr as <a href="http://www.flickr.com/people/' . $current_user['auth']['user']['nsid'] . '" target="_new">' . $current_user['auth']['user']['username'] . '</a> (<a href="/wp-admin/options-general.php?page=' . basename(__FILE__) . '&flickr_tag_logout=true">logout</a>)';
-				} else {
-					$params = array(
-						'method'	=> 'flickr.auth.getFrob',
-						'format'	=> 'php_serial'
-					);
+					if($current_user) {
+						echo 'You are authenticated to Flickr as <a href="http://www.flickr.com/people/' . $current_user['auth']['user']['nsid'] . '" target="_new">' . $current_user['auth']['user']['username'] . '</a> (<a href="/wp-admin/plugins.php?page=' . basename(__FILE__) . '&flickr_tag_logout=true">logout</a>).';
+					} else {
+						$params = array(
+							'method'	=> 'flickr.auth.getFrob',
+							'format'	=> 'php_serial'
+						);
 
-					$r = $this->apiCall($params, false);
+						$r = $this->apiCall($params, false);
 
-					$frob = $r['frob']['_content'];
+						$frob = $r['frob']['_content'];
 
-					if($frob) {
-						$flickr_url = "http://www.flickr.com/services/auth/";
-						$flickr_url .= "?api_key=" . FLICKR_TAG_API_KEY;
-						$flickr_url .= "&perms=read";
-						$flickr_url .= "&frob=" . $frob;
-						$flickr_url .= "&api_sig=" . md5(FLICKR_TAG_API_KEY_SS . "api_key" . FLICKR_TAG_API_KEY . "frob" . $frob . "permsread");
+						if($frob) {
+							$flickr_url = "http://www.flickr.com/services/auth/";
+							$flickr_url .= "?api_key=" . FLICKR_TAG_API_KEY;
+							$flickr_url .= "&perms=read";
+							$flickr_url .= "&frob=" . $frob;
+							$flickr_url .= "&api_sig=" . md5(FLICKR_TAG_API_KEY_SS . "api_key" . FLICKR_TAG_API_KEY . "frob" . $frob . "permsread");
+				?>
+					You are not authenticated with Flickr; but authorizing this plugin with Flickr is a simple, two step process:
 
-			?>
-				Authorizing this plugin with Flickr is a simple, two step process:
+					<p id="step1" class="current">
+					<strong>Step 1:</strong> <a href="<?php echo $flickr_url; ?>" onClick="this.parentNode.className='disabled'; document.getElementById('step2').className='current';" target="_new">Authorize this application to access Flickr</a>. <em>This will open a new window. When you are finished, come back to this page.</em>
+					</p>
 
-				<p id="step1" class="current">
-				<strong>Step 1:</strong> <a href="<?php echo $flickr_url; ?>" onClick="this.parentNode.className='disabled'; document.getElementById('step2').className='current';" target="_new">Authorize this application to access Flickr</a>. <em>This will open a new window. When you are finished, come back to this page.</em>
-				</p>
+					<p id="step2" class="disabled">
+					<strong>Step 2:</strong> After authorizing this application with Flickr in the popup window, <a href="<?php echo $_SERVER['PHP_SELF']; ?>?page=<?php echo basename(__FILE__); ?>&flickr_tag_frob=<?php echo $frob; ?>">click here to complete the authorization process</a>.
+					</p>	
+				<?php
+						} else
+							echo $this->error("Error getting frob");
+					}
+				?>
+				</td>
+				</tr>
+			</tbody>
+			</table>			
 
-				<p id="step2" class="disabled">
-				<strong>Step 2:</strong> After authorizing this application with Flickr in the popup window, <a href="<?php echo $_SERVER['PHP_SELF']; ?>?page=<?php echo basename(__FILE__); ?>&flickr_tag_frob=<?php echo $frob; ?>">click here to complete the authorization process</a>.
-				</p>
+			<h3>Single Photo Display Options</h3>
 
-			<?php
-				} else
-					echo $this->error("Error getting frob");
-			}
-			?>
-
-
-
-
-			<p class="header">Inline Photo Display Options</p>
-
-			<p class="subheader">(Single) Photos</p>
 			<?php
 				$this->getDisplayDefaultsOptionsHTML("photo");
 			?>
 
-			<p class="subheader">Sets</p>
+			<h3>Set Display Options</h3>
+
 			<?php
 				$this->getDisplayDefaultsOptionsHTML("set");
 			?>
 
-			<p class="subheader">Tags</p>
+			<h3>Tag Display Options</h3>
+
 			<?php
 				$this->getDisplayDefaultsOptionsHTML("tag");
 			?>
 
+			<h3>Photo Behavior</h3>
 
+			<table class="form-table">
+			<tbody>
+				<tr valign="top">
+				<th scope="row">
+					When clicked, photos
+				</th>
+				<td>
+					<input type="radio" name="flickr_tag_link_action" value="flickr" <?php if($this->request['link_action'] == "flickr") echo "checked"; ?>> link to the photo's Flickr page.
+					<br/>
+					<input type="radio" name="flickr_tag_link_action" value="lightbox" <?php if($this->request['link_action'] == "lightbox") echo "checked"; ?>> display a larger version in a <a href="http://www.huddletogether.com/projects/lightbox2/" target="_new">Lightbox</a>.
+					<br/>
+					<input type="radio" name="flickr_tag_link_action" value="none" <?php if($this->request['link_action'] != "flickr" && $this->request['link_action'] != "lightbox") echo "checked"; ?>> do nothing.
 
+					<p class="more">
+						<strong>Note that if Lightbox display mode is selected, tooltips on inline photos are disabled--tooltip content is shown as a caption in the Lightbox.</strong> Sorry, both cannot be enabled at the same time due to technical limitations.
+					</p>
+				</td>
+				</tr>
+			</tbody>
+			</table>
 
-			<p class="header">Inline Photo Behavior Options</p>
+			<h3>Caching</h3>
 
-			<p class="label" style="height: 50px;">When clicked, inline photos:</p>
-			<p class="field">
-				<input type="radio" name="flickr_tag_link_action" value="flickr" <?php if($this->request['link_action'] == "flickr") echo "checked"; ?>> link to the photo's Flickr page.
-				<br/>
-				<input type="radio" name="flickr_tag_link_action" value="lightbox" <?php if($this->request['link_action'] == "lightbox") echo "checked"; ?>> display a larger version in a <a href="http://www.huddletogether.com/projects/lightbox2/" target="_new">Lightbox</a>.
-				<br/>
-				<input type="radio" name="flickr_tag_link_action" value="none" <?php if($this->request['link_action'] != "flickr" && $this->request['link_action'] != "lightbox") echo "checked"; ?>> do nothing.
-			</p>
+			<table class="form-table">
+			<tbody>
+				<tr valign="top">
+				<th scope="row">
+					Cache lifetime
+				</th>
+				<td>
+					<select size=1 name="flickr_tag_cache_ttl">
+						<option value="86400" <?php if($this->request['cache_ttl'] == "86400") echo "selected"; ?>>1 day</option>
+						<option value="259200" <?php if($this->request['cache_ttl'] == "259200") echo "selected"; ?>>3 days</option>
+						<option value="604800" <?php if($this->request['cache_ttl'] == "604800") echo "selected"; ?>>1 week</option>
+						<option value="1209600" <?php if($this->request['cache_ttl'] == "1209600") echo "selected"; ?>>2 weeks</option>
+						<option value="2592000" <?php if($this->request['cache_ttl'] == "2592000") echo "selected"; ?>>1 month</option>
+					</select>
+				</td>
+				</tr>
 
-			<p class="more">
-				This option controls what happens when a user clicks on an inline photo.
- 
-				<strong>Note that if Lightbox display mode is selected, tooltips on inline photos are disabled--tooltip content is shown as a caption in the Lightbox.</strong> Sorry, both cannot be enabled at the same time due to technical limitations.
-			</p>
+				<tr valign="top">
+				<th scope="row">
+					Manually flush cache
+				</th>
+				<td>
+					<input type="submit" value="Flush cache now" name="flickr_tag_flush" class="button-secondary">
 
+					<p class="more">
+						If you have made changes on Flickr, but are not seeing these changes reflected on your blog, you may need to flush the Flickr cache. This will happen automatically after the cache lifetime period expires (set above).
+					</p>
+				</td>
+				</tr>
+			</tbody>
+			</table>	
 
-
-
-			<p class="header">Caching</p>
-
-			<p class="label">Cache Lifetime:</p>
-			<p class="field">
-				<select size=1 name="flickr_tag_cache_ttl">
-					<option value="86400" <?php if($this->request['cache_ttl'] == "86400") echo "selected"; ?>>1 day</option>
-					<option value="259200" <?php if($this->request['cache_ttl'] == "259200") echo "selected"; ?>>3 days</option>
-					<option value="604800" <?php if($this->request['cache_ttl'] == "604800") echo "selected"; ?>>1 week</option>
-					<option value="1209600" <?php if($this->request['cache_ttl'] == "1209600") echo "selected"; ?>>2 weeks</option>
-					<option value="2592000" <?php if($this->request['cache_ttl'] == "2592000") echo "selected"; ?>>1 month</option>
-				</select>
-			</p>
-
-			<p class="more">
-				To save bandwidth and minimize queries of Flickr, this plugin saves responses from Flickr for later use in a cache. The cache lifetime specifies how long the saved copy should be used before it is considered to be "expired".
-			</p>
-
-			<p class="label">Flush Cache:</p>
-			<p class="field">
-				<input type="submit" value="Flush Cache Now" name="flickr_tag_flush">
-			</p>
-
-			<p class="more">
-				If you have made changes on Flickr, but are not seeing these changes reflected on your blog, you may need to flush the Flickr cache. This will happen automatically after the cache lifetime period expires (set above).
-			</p>
-
-
-
-
-			<p class="header"></p>
-
-			<p>
-			<input type="submit" name="flickr_tag_save" value="Save Changes">
+			<p class="submit">
+				<input type="submit" name="flickr_tag_save" value="Save Changes" default>
 			</p>
 
 			</form>
@@ -381,107 +362,116 @@ class FlickrTagAdmin extends FlickrTagCommon {
 	<?php
 	}
 
-	function getUserContent() {
-	?>
-		<script type="text/javascript" src="/wp-content/plugins/flickr-tag/js/flickrTag.js"></script>
+	function getIFrameContent() {
+		$html = media_upload_header();
 
-		<div style="padding: 10px; padding-left: 15px;">
-			Choose a set from the list below to insert into your post:
+		$html .= '<div class="wrapper">';
 
-			<p style="padding-left: 30px;">
-			<?php
-				$params = array(
-					'method'	=> 'flickr.photosets.getList',
-					'format'	=> 'php_serial'
-				);
+		switch($_REQUEST['tab']) {
+			default:
+			case "flickr_tag_recent":
+				$html .= $this->getIFrameContent_Recent();
+				break;
 
-				$r = $this->apiCall($params, false, true);
-
-				if($r) {
-					echo '<select id="flickr_tag_sets">';
-
-					foreach($r['photosets']['photoset'] as $number=>$photoset) 
-						echo '<option value="' . $photoset['id'] . '">' . $photoset['title']['_content'] . ' (' . $photoset['photos'] . ' photo' . (($photoset['photos'] != 1) ? "s" : "") . ')</option>';
-						
-					echo '</select>';
-
-					echo '<input class="button" type="button" value="Send to editor &raquo;" onClick="flickrTag_insertIntoEditor(\'[flickr]set:\' + document.getElementById(\'flickr_tag_sets\').value + \'[/flickr]\');">';
-				} else { 
-					echo "<em>No sets were found on Flickr. Did you <a href='options-general.php?page=FlickrTagAdmin.php' target='_top'>setup the plugin</a> yet?</em>";
-				}
-			?>
-			</p>
-
-			<p>
-				Or, click on a thumbnail to insert a photo from your photostream into your post:
-			</p>
-
-			<p style="padding-left: 30px;">
-			<?php
-				$params = array(
-                                        'method'        => 'flickr.people.getPublicPhotos',
-                               	        'format'        => 'php_serial',
-                                       	'per_page'      => '48',
-                                        'user_id'       => $this->optionGet("nsid")
-       	                        );
-
-				$r = $this->apiCall($params, false, true);
-
-				if($r) {
-					foreach($r['photos']['photo'] as $number=>$photo) {
-						$img_url = "http://farm" . $photo['farm'] . ".static.flickr.com/" . $photo['server'] . "/" . $photo['id'] . "_" . $photo['secret'] . "_s.jpg";
+			case "flickr_tag_set":
+				$html .= $this->getIFrameContent_Set();
+				break;
 	
-						echo '<a href="#" onClick="flickrTag_insertIntoEditor(\'[flickr]photo:' . $photo['id'] . '[/flickr]\'); return false;" style="text-decoration: none; border: none;"><img src="' . $img_url . '" alt="" style="padding-right: 5px; padding-bottom: 5px;"/></a>';
-					}
-				} else {
-					echo "<em>No photos were found on Flickr. Did you <a href='options-general.php?page=FlickrTagAdmin.php' target='_top'>setup the plugin</a> yet?</em>";
-				}	
-			?>
-			</p>
+			case "flickr_tag_syntax":
+				$html .= $this->getIFrameContent_Syntax();
+				break;
+		}
 
-			<p>
-				Or, include a set, tag or photo in your post by using the "flickr" tag in your post's text. The syntax is: 
-			</p>
+		$html .= '</div>';
 
-			<p style="font-family: courier; padding: 3px; background-color: #EFEFEF;">
-				[flickr <em>[params]</em>]set:set id<em>[(size[,limit])]</em>[/flickr] or <br/>
-				[flickr <em>[params]</em>]tag:tag1<em>[(,|+)tag2...][@username][(size[,limit])]</em>[/flickr] or <br/>
-				[flickr <em>[params]</em>]photo:photo id<em>[(size[,limit])]</em>[/flickr] <br/>
-			</p>
+		echo $html;
+	}
 
-			<p>
-				Any parameters (<em>[params]</em>) you add to the flickr tag (e.g. "style" or "alt") are added to the inserted image tag(s).<br/>
-				If no mode is provided, "photo" is assumed (depricated). 
-			<p>
+	function getIFrameContent_Set() {
+		$html = "";
 
-			<p>
-				<em>Examples of use:</em>
-			</p>
+		$params = array(
+			'method'	=> 'flickr.photosets.getList',
+			'format'	=> 'php_serial'
+		);
 
-			<p>
-				To show the set with ID 72157602128216010, use:<br/>
-			</p>
+		$r = $this->apiCall($params, false, true);
 
-			<p style="font-family: courier; padding: 3px; background-color: #EFEFEF;">
-				[flickr]set:72157602128216010[/flickr]
-			</p>
+		if($r) {
+			$html .= '<select id="flickr_tag_sets">';
 
-			<p>
-				To show "medium" photos tagged with "railcar" OR "train" from anyone, use:
-			</p>
+			foreach($r['photosets']['photoset'] as $number=>$photoset) 
+				$html .= '<option value="' . $photoset['id'] . '">' . $photoset['title']['_content'] . ' (' . $photoset['photos'] . ' photo' . (($photoset['photos'] != 1) ? "s" : "") . ')</option>';
+						
+			$html .= '</select>';
 
-			<p style="font-family: courier; padding: 3px; background-color: #EFEFEF;">
-				[flickr]tag:railcar,train(medium)[/flickr]
-			</p>
+			$html .= '<input class="button" type="button" value="Send to editor &raquo;" onClick="flickrTag_insertIntoEditor(\'[flickr]set:\' + document.getElementById(\'flickr_tag_sets\').value + \'[/flickr]\');">';
+		} else 
+			$html .= $this->error("API call failed to get available sets.");
 
-			<p>
-				To show a maximum of 20 "large" photos tagged with "railcar" AND "adm" from the user "anemergencystop", padding images with 10 pixels on all sides, use:
-			</p>
+		return $html;
+	}
 
-			<p style="font-family: courier; padding: 3px; background-color: #EFEFEF;">
-				[flickr style="padding: 10px;"]tag:railcar+adm@anemergencystop(large, 20)[/flickr]
-			</p>
-		</div>
-	<?php
+	function getIFrameContent_Recent() {
+		$html = "";
+
+		$params = array(
+			'method'        => 'flickr.people.getPublicPhotos',
+			'format'        => 'php_serial',
+			'per_page'      => '40',
+			'user_id'       => $this->optionGet("nsid")
+		);
+
+		$r = $this->apiCall($params, false, true);
+
+		if($r) {
+			foreach($r['photos']['photo'] as $number=>$photo) {
+				$img_url = "http://farm" . $photo['farm'] . ".static.flickr.com/" . $photo['server'] . "/" . $photo['id'] . "_" . $photo['secret'] . "_s.jpg";
+	
+				$html .= '<a href="#" onClick="flickrTag_insertIntoEditor(\'[flickr]photo:' . $photo['id'] . '[/flickr]\'); return false;" style="text-decoration: none; border: none;"><img src="' . $img_url . '" alt="" style="padding-right: 5px; padding-bottom: 5px;"/></a>';
+			}
+		} else
+			$html .= $this->error("API call failed to get recent photos.");
+
+		return $html;
+	}
+
+	function getIFrameContent_Syntax() {
+		$html = <<<EOF
+
+		<strong>Flickr Tag Syntax</strong>
+
+		<p style="font-family: courier; padding: 3px; background-color: #EFEFEF;">
+			[flickr <em>[params]</em>]set:set id<em>[(size[,limit])]</em>[/flickr] or <br/>
+			[flickr <em>[params]</em>]tag:tag1<em>[(,|+)tag2...][@username][(size[,limit])]</em>[/flickr] or <br/>
+			[flickr <em>[params]</em>]photo:photo id<em>[(size[,limit])]</em>[/flickr] <br/>
+		</p>
+
+		<p>
+			Any parameters (<em>[params]</em>) you add to the flickr tag (e.g. "style" or "alt") are added to the inserted image tag(s). If no mode is provided, "photo" is assumed (depricated). 
+		<p>
+
+		<p>
+			<em>Examples of use:</em>
+		</p>
+
+		<p>
+			To show "medium" photos tagged with "railcar" OR "train" from anyone, use:
+		</p>
+
+		<p style="font-family: courier; padding: 3px; background-color: #EFEFEF;">
+			[flickr]tag:railcar,train(medium)[/flickr]
+		</p>
+
+		<p>
+			To show a maximum of 20 "large" photos tagged with "railcar" AND "adm" from the user "anemergencystop", padding images with 10 pixels on all sides, use:
+		</p>
+
+		<p style="font-family: courier; padding: 3px; background-color: #EFEFEF;">
+			[flickr style="padding: 10px;"]tag:railcar+adm@anemergencystop(large, 20)[/flickr]
+		</p>
+EOF;
+
+		return $html;
 	}
 }

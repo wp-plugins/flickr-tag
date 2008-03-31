@@ -1,8 +1,8 @@
 === Plugin Name ===
 Contributors: crimesagainstlogic
 Tags: flickr, thumbnails, tag, sets, photos, lightbox, images
-Requires at least: 2.2.1
-Tested up to: 2.2.1
+Requires at least: 2.5
+Tested up to: 2.5
 Stable tag: trunk
 
 Insert Flickr sets, tags or individual photos in your posts by using a special tag.
@@ -27,13 +27,16 @@ This plugin mostly follows the [standard WordPress installation method][]:
 
 1. Activate the plugin in your WordPress plugins control panel.
 
-1. Go to the "Options" admin page, then choose "Flickr Tag" to configure the plugin. 
+1. Go to the "Plugins" admin page, then choose "Flickr Tag" to configure the plugin. 
 
-After installation, you'll have a new "Flickr" tab in the "glovebox" that appears when you edit/write posts. Use it to insert a favorite, or a set. Or, use the "flickr" tag (syntax outlined in the glovebox). 
+After installation, you'll have a new "Flickr" media icon that appears when you edit/write posts. Use it to insert a favorite, or a set. Or, use the "flickr" tag (syntax outlined in the popup). 
 
 [standard WordPress installation method]: http://codex.wordpress.org/Managing_Plugins#Installing_Plugins
 
 == Frequently Asked Questions ==
+
+= What's new in 2.2? =
+* Compatability with 2.5: shortcode API and media button integration
 
 = What's new in 2.1? =
 * Configurable link behavior: lightbox, tooltip or none.

@@ -1,32 +1,17 @@
-.header {
-	font-weight: bold;
-	border-bottom: 1px solid #CCCCCC;
-}
-
-.subheader {
-	font-style: italic;
-	padding-left: 20px;
-}
-
-.label {
-	float: left;	
-	text-align: right;
-		
-	width: 200px;
-
-	padding: 0px;
-	margin: 0px;
-	margin-right: 10px;
-	padding-top: 5px;
+.wrapper {
+	padding: 14px;
 }
 
 .more {
 	font-style: italic;
-	font-size: 75%;
+	font-size: 85%;
 
 	width: 400px;
-	padding-left: 210px;
-	margin-bottom: 30px;
+
+	margin: 0px;
+	margin-top: 10px;
+
+	padding: 0px;
 }
 
 .current {

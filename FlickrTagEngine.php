@@ -1,6 +1,6 @@
 <?php
 /* 
-Copyright 2007 Jeffrey Maki (email: crimesagainstlogic@gmail.com)
+Copyright 2008 Jeffrey Maki (email: crimesagainstlogic@gmail.com)
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -20,6 +20,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 class FlickrTagEngine extends FlickrTagCommon {
         function FlickrTagEngine() {
                 parent::FlickrTagCommon();
+
+		add_shortcode('flickr', array($e, "flickrShortcodeHandler"));
 
 		add_action('wp_head', array($this, "getPublicHead"));
         }
@@ -50,37 +52,11 @@ class FlickrTagEngine extends FlickrTagCommon {
 	<?php
 	}
 
-	function processContent($content) {
-		while(true) {
-			$s = strpos($content, '[flickr');
-		
-			// no more flickr tags
-			if(! $s) 
-				break;
-
-			$s2 = strpos($content, ']', $s);
-
-			// malformed tag
-			if(! $s2)
-				continue;
-
-			$e = strpos($content, '[/flickr]', $s2);
-
-			// malformed tag
-			if(! $e)
-				continue;
-
-			$params = substr($content, $s + 7, $s2 - $s - 7);	// tag params for addition to "img" tags
-			$contents = substr($content, $s2 + 1, $e - $s2 - 1);	// contents of tag
-
-			// replace flickr tag with rendered HTML
-			$content = substr($content, 0, $s) . $this->renderTag($contents, $params) . substr($content, $e + 9);
-		}
-
-		return $content;
+	function flickrShortcodeHandler($attrs, $contents = null) {
+		return $this->renderTag($contents, $attrs);
 	}
 
-	function renderTag($tag, $tag_param = null) {
+	function renderTag($tag, $tag_attrs = null) {
 		$mode = null;
 		$param = null;
 
@@ -134,7 +110,7 @@ class FlickrTagEngine extends FlickrTagCommon {
 				if(! $r)
 					return $this->error("Bad call to display set '" . $param . "'");
 
-				return $this->renderPhotos($r['photoset'], $mode, $tag_param, $size, $limit);
+				return $this->renderPhotos($r['photoset'], $mode, $tag_attrs, $size, $limit);
 
 			case "tag":
 				$p = strpos($param, "@");
@@ -183,7 +159,7 @@ class FlickrTagEngine extends FlickrTagCommon {
 				if(! $r)
 					return $this->error("Call to display tag query '" . $tags . "' failed.");
 
-				return $this->renderPhotos($r['photos'], $mode, $tag_param, $size, $limit);
+				return $this->renderPhotos($r['photos'], $mode, $tag_attrs, $size, $limit);
 
 			case "photo":
 				$params = array(
@@ -197,11 +173,11 @@ class FlickrTagEngine extends FlickrTagCommon {
 				if(! $r)
 					return $this->error("Call to display photo '" . $param . "' failed.");
 
-				return $this->renderPhotos($r['photo'], $mode, $tag_param, $size, $limit);
+				return $this->renderPhotos($r['photo'], $mode, $tag_attrs, $size, $limit);
 		}
 	}
 
-	function renderPhotos($result, $mode, $tag_param, $size, $limit) {
+	function renderPhotos($result, $mode, $tag_attrs, $size, $limit) {
 		$html = "";
 		$i = null;
 
@@ -217,7 +193,14 @@ class FlickrTagEngine extends FlickrTagCommon {
 		$lightbox_uid = md5(rand() . time());
 
 		foreach($i as $photo) {
-			$extra = $tag_param;
+			$extra = "";
+
+			if(is_array($tag_attrs)) {
+				foreach($tag_attrs as $k=>$v)
+					$extra .= $k . '="' . $v . '" ';
+
+				$extra = trim($extra);
+			}
 
 			$params = array(
 				'photo_id'		=> $photo['id'],
