@@ -14,7 +14,7 @@ the photos onto my server, have them appear in a separate gallery, or otherwise 
 
 My solution was to write my own plugin.
 
-<strong>Please note the version requirements on this plugin--it requires version 2.5!</strong>
+<strong>Please double-check the version requirements on this plugin--it requires version 2.5!</strong>
 
 [webopticon.com]: http://www.webopticon.com
 [Flickr]: http://www.flickr.com
