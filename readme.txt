@@ -9,12 +9,9 @@ Insert Flickr sets, tags or individual photos in your posts by using a special t
 
 == Description ==
 
-When I started using WordPress for [webopticon.com][], I had a hard time finding a [Flickr][] plugin that didn't download all 
-the photos onto my server, have them appear in a separate gallery, or otherwise look totally kitsch. I just wanted something simple. I wanted thumbnails to show, and I wanted to be able to put them "inline" in my posts. Keep the photos and discussion on Flickr, as far as I'm concerned. I couldn't find anybody to share my design goals.
+When I started using WordPress for [webopticon.com][], I had a hard time finding a [Flickr][] plugin that didn't download all the photos onto my server, have them appear in a separate gallery, or otherwise look totally kitsch. I just wanted something simple. I wanted thumbnails to show, and I wanted to be able to put them "inline" in my posts. Keep the photos and discussion on Flickr, as far as I'm concerned. I couldn't find anybody to share my design goals.
 
 My solution was to write my own plugin.
-
-<b>NB: Please double-check the version requirements on this plugin--it requires version 2.5!</b>
 
 [webopticon.com]: http://www.webopticon.com
 [Flickr]: http://www.flickr.com
@@ -31,7 +28,8 @@ This plugin mostly follows the [standard WordPress installation method][]:
 
 1. Go to the "Plugins" admin page, then choose "Flickr Tag" to configure the plugin. 
 
-After installation, you'll have a new "Flickr" media icon that appears when you edit/write posts. Use it to insert a favorite, or a set. Or, use the "flickr" tag (syntax outlined in the popup media window). 
+After installation and configuration, you'll have a new "Flickr" media icon that appears when you edit/write posts. Use it to insert a favorite, or a set. 
+Or, use the "flickr" tag (syntax outlined in the popup media window). 
 
 [standard WordPress installation method]: http://codex.wordpress.org/Managing_Plugins#Installing_Plugins
 
@@ -42,7 +40,7 @@ After installation, you'll have a new "Flickr" media icon that appears when you 
 * Config page moved to "Plugins" admin page.
 * Use of Shortcode API.
 * Added new media button and tabbed popup interface.
-* Removed tag syntax migration tool--therefore, if upgrading from pre-2.1, you must upgrade to 2.1 before you upgrade to 2.2! 
+* Removed tag syntax migration tool: therefore, if upgrading from pre-2.0, you must upgrade to 2.0 or 2.1 before you upgrade to 2.2! 
 
 = What's new in 2.1? =
 * Configurable link behavior: lightbox, tooltip or none.
