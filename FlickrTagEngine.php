@@ -190,17 +190,19 @@ class FlickrTagEngine extends FlickrTagCommon {
 		if(! $i)
 			return;
 
+		$default_extra = "";
+
+		if(is_array($tag_attrs)) {
+			foreach($tag_attrs as $k=>$v)
+				$default_extra .= $k . '="' . $v . '" ';
+
+			$default_extra = trim($default_extra);
+		}
+
 		$lightbox_uid = md5(rand() . time());
 
 		foreach($i as $photo) {
-			$extra = "";
-
-			if(is_array($tag_attrs)) {
-				foreach($tag_attrs as $k=>$v)
-					$extra .= $k . '="' . $v . '" ';
-
-				$extra = trim($extra);
-			}
+			$extra = $default_extra;
 
 			$params = array(
 				'photo_id'		=> $photo['id'],

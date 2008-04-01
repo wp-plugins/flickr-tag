@@ -26,6 +26,7 @@ class FlickrTagAdmin extends FlickrTagCommon {
 		$this->getRequest();
 
         	add_action("admin_menu", array($this, "getAdminMenu"));
+
 		add_action("admin_print_scripts", array($this, "getAdminHead"));
         	
 		add_action('media_buttons_context', array($this, "getButtonContext"));
