@@ -34,7 +34,7 @@ class FlickrTagEngine extends FlickrTagCommon {
 			<script type="text/javascript" src="/wp-content/plugins/flickr-tag/js/lightbox.js"></script>
 
 			<link rel="stylesheet" href="/wp-content/plugins/flickr-tag/css/lightbox.css" type="text/css" media="screen" />
-	<?
+	<?php
 		} else {
 	?>
 			<script type="text/javascript" src="/wp-content/plugins/flickr-tag/js/yahoo.js"></script>
@@ -45,7 +45,7 @@ class FlickrTagEngine extends FlickrTagCommon {
 
 			<script type="text/javascript" src="/wp-content/plugins/flickr-tag/js/autoTooltips.js"></script>
 			<link href="/wp-content/plugins/flickr-tag/css/autoTooltips.css" type="text/css" rel="stylesheet"/>
-	<? 
+	<?php 
 		}
 	?>
 		<link href="/wp-content/plugins/flickr-tag/css/flickrTag.css" type="text/css" rel="stylesheet"/>
