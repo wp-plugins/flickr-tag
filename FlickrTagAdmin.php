@@ -53,7 +53,7 @@ class FlickrTagAdmin extends FlickrTagCommon {
 	function getButtonContext($html) {
 	        global $post_ID, $temp_ID;
         
-		return $html . '<a href="media-upload.php?post_id=' . (int)(0 == $post_ID ? $temp_ID : $post_ID) . '&amp;type=flickr_tag&amp;TB_iframe=true&amp;height=450&amp;width=640" class="thickbox" title="Add an image from Flickr"><img src="/wp-content/plugins/flickr-tag/images/flickr-button.gif"/></a>';
+		return $html . '<a href="media-upload.php?post_id=' . (int)(0 == $post_ID ? $temp_ID : $post_ID) . '&amp;type=flickr_tag&amp;TB_iframe=true&amp;height=450&amp;width=640" class="thickbox" title="Add an image from Flickr"><img src="' . get_bloginfo("wpurl") . '/wp-content/plugins/flickr-tag/images/flickr-button.gif"/></a>';
 	}
 
 	function getMediaUploadTabs($tabs) {
@@ -161,7 +161,7 @@ class FlickrTagAdmin extends FlickrTagCommon {
 			} else
 				echo $this->error("Error converting frob into token");
 					
-			header("Location: /wp-admin/plugins.php?page=" . basename(__FILE__));
+			header("Location: " . get_bloginfo("wpurl") . "/wp-admin/plugins.php?page=" . basename(__FILE__));
 		} else
 
 		// logout
@@ -171,7 +171,7 @@ class FlickrTagAdmin extends FlickrTagCommon {
 
 			$this->optionSaveAll();
 
-			header("Location: /wp-admin/plugins.php?page=" . basename(__FILE__));
+			header("Location: " . get_bloginfo("wpurl") . "/wp-admin/plugins.php?page=" . basename(__FILE__));
 		} else
 
 		// flush cache
@@ -215,12 +215,12 @@ class FlickrTagAdmin extends FlickrTagCommon {
 
 	function getAdminHead() {
 	?>
-		<link href="/wp-content/plugins/flickr-tag/css/flickrTagAdmin.css" type="text/css" rel="stylesheet"/>
-		<link href="/wp-content/plugins/flickr-tag/css/flickrTag.css" type="text/css" rel="stylesheet"/>
+		<link href="<?php bloginfo("wpurl"); ?>/wp-content/plugins/flickr-tag/css/flickrTagAdmin.css" type="text/css" rel="stylesheet"/>
+		<link href="<?php bloginfo("wpurl"); ?>/wp-content/plugins/flickr-tag/css/flickrTag.css" type="text/css" rel="stylesheet"/>
 
-		<script type="text/javascript" src="/wp-content/plugins/flickr-tag/js/flickrTag.js"></script>
+		<script type="text/javascript" src="<?php bloginfo("wpurl"); ?>/wp-content/plugins/flickr-tag/js/flickrTag.js"></script>
 
-		<link rel='stylesheet' href='http://www.webopticon.com/wp-admin/css/media.css' type='text/css'/>
+		<link rel='stylesheet' href='<?php bloginfo("wpurl"); ?>/wp-admin/css/media.css' type='text/css'/>
 	<?php
 	}
 
@@ -242,7 +242,7 @@ class FlickrTagAdmin extends FlickrTagCommon {
 					$current_user = $this->getCurrentUser();
 
 					if($current_user) {
-						echo 'You are authenticated to Flickr as <a href="http://www.flickr.com/people/' . $current_user['auth']['user']['nsid'] . '" target="_new">' . $current_user['auth']['user']['username'] . '</a> (<a href="/wp-admin/plugins.php?page=' . basename(__FILE__) . '&flickr_tag_logout=true">logout</a>).';
+						echo 'You are authenticated to Flickr as <a href="http://www.flickr.com/people/' . $current_user['auth']['user']['nsid'] . '" target="_new">' . $current_user['auth']['user']['username'] . '</a> (<a href="' . get_bloginfo("wpurl") . '/wp-admin/plugins.php?page=' . basename(__FILE__) . '&flickr_tag_logout=true">logout</a>).';
 					} else {
 						$params = array(
 							'method'	=> 'flickr.auth.getFrob',

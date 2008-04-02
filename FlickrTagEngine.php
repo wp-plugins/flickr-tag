@@ -29,26 +29,26 @@ class FlickrTagEngine extends FlickrTagCommon {
 	function getPublicHead() {
 		if($this->optionGet('link_action') == "lightbox") {
 	?>
-			<script type="text/javascript" src="/wp-content/plugins/flickr-tag/js/prototype.js"></script>
-			<script type="text/javascript" src="/wp-content/plugins/flickr-tag/js/scriptaculous.js?load=effects"></script>
-			<script type="text/javascript" src="/wp-content/plugins/flickr-tag/js/lightbox.js"></script>
+			<script type="text/javascript" src="<?php bloginfo("wpurl"); ?>/wp-content/plugins/flickr-tag/js/prototype.js"></script>
+			<script type="text/javascript" src="<?php bloginfo("wpurl"); ?>/wp-content/plugins/flickr-tag/js/scriptaculous.js?load=effects"></script>
+			<script type="text/javascript" src="<?php bloginfo("wpurl"); ?>/wp-content/plugins/flickr-tag/js/lightbox.js"></script>
 
-			<link rel="stylesheet" href="/wp-content/plugins/flickr-tag/css/lightbox.css" type="text/css" media="screen" />
+			<link rel="stylesheet" href="<?php bloginfo("wpurl"); ?>/wp-content/plugins/flickr-tag/css/lightbox.css" type="text/css" media="screen" />
 	<?php
 		} else {
 	?>
-			<script type="text/javascript" src="/wp-content/plugins/flickr-tag/js/yahoo.js"></script>
-			<script type="text/javascript" src="/wp-content/plugins/flickr-tag/js/dom.js"></script>
-			<script type="text/javascript" src="/wp-content/plugins/flickr-tag/js/event.js"></script>
-			<script type="text/javascript" src="/wp-content/plugins/flickr-tag/js/container.js"></script>
-			<script type="text/javascript" src="/wp-content/plugins/flickr-tag/js/utilities.js"></script>
+			<script type="text/javascript" src="<?php bloginfo("wpurl"); ?>/wp-content/plugins/flickr-tag/js/yahoo.js"></script>
+			<script type="text/javascript" src="<?php bloginfo("wpurl"); ?>/wp-content/plugins/flickr-tag/js/dom.js"></script>
+			<script type="text/javascript" src="<?php bloginfo("wpurl"); ?>/wp-content/plugins/flickr-tag/js/event.js"></script>
+			<script type="text/javascript" src="<?php bloginfo("wpurl"); ?>/wp-content/plugins/flickr-tag/js/container.js"></script>
+			<script type="text/javascript" src="<?php bloginfo("wpurl"); ?>/wp-content/plugins/flickr-tag/js/utilities.js"></script>
 
-			<script type="text/javascript" src="/wp-content/plugins/flickr-tag/js/autoTooltips.js"></script>
-			<link href="/wp-content/plugins/flickr-tag/css/autoTooltips.css" type="text/css" rel="stylesheet"/>
+			<script type="text/javascript" src="<?php bloginfo("wpurl"); ?>/wp-content/plugins/flickr-tag/js/autoTooltips.js"></script>
+			<link href="<?php bloginfo("wpurl"); ?>/wp-content/plugins/flickr-tag/css/autoTooltips.css" type="text/css" rel="stylesheet"/>
 	<?php 
 		}
 	?>
-		<link href="/wp-content/plugins/flickr-tag/css/flickrTag.css" type="text/css" rel="stylesheet"/>
+		<link href="<?php bloginfo("wpurl"); ?>/wp-content/plugins/flickr-tag/css/flickrTag.css" type="text/css" rel="stylesheet"/>
 	<?php
 	}
 
