@@ -61,7 +61,7 @@ Or, use the "flickr" tag (syntax outlined in the popup media window).
 == Screenshots ==
 
 1. The plugin is easily configured through the admin panel. Be sure to visit this admin page upon initial installation to authenticate to Flickr.
-2. A new "Flickr" tab is available when writing blog entries. It provides an easy way to insert a set or recent photo from your photostream; it also shows the syntax of the "flickr" tag. 
+2. A new "Flickr" media button is available when writing blog entries. It provides an easy way to insert a set or recent photo from your photostream (or a set).
 3. An example of use. The plugin allows photos to be linked to Flickr, showing the description of the photo in a tooltip (as shown above), or the plugin can be configured to show a larger version of the photo in a [Lightbox][]. 
 
 [Lightbox]: http://www.huddletogether.com/projects/lightbox2/
