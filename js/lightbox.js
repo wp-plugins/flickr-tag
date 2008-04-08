@@ -62,8 +62,8 @@
 //
 //	Configuration
 //
-var fileLoadingImage = "/wp-content/plugins/flickr-tag/images/loading.gif";		
-var fileBottomNavCloseImage = "/wp-content/plugins/flickr-tag/images/closelabel.gif";
+var fileLoadingImage = "../images/loading.gif";		
+var fileBottomNavCloseImage = "../images/closelabel.gif";
 
 var overlayOpacity = 0.8;	// controls transparency of shadow overlay
 
