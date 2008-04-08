@@ -17,7 +17,7 @@ a.autoTooltip {
 }
 
 .ttPosUnder {
-	background:transparent url(/wp-content/plugins/flickr-tag/images/top.gif) no-repeat scroll left top;
+	background:transparent url(../images/top.gif) no-repeat scroll left top;
 	padding: 13px 0pt 0pt;
 }
 
@@ -30,7 +30,7 @@ a.autoTooltip {
 }
 
 .ttPosOver {
-	background:transparent url(/wp-content/plugins/flickr-tag/images/bottom.gif) no-repeat scroll left bottom;
+	background:transparent url(../images/bottom.gif) no-repeat scroll left bottom;
 	padding: 0pt 0pt 13px;
 }
 
