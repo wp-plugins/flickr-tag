@@ -36,6 +36,7 @@ class FlickrTagAdmin extends FlickrTagCommon {
 		add_action("media_upload_flickr_tag_syntax", array($this, "getFlickrUploadContent"));
 		add_action("media_upload_flickr_tag_set", array($this, "getFlickrUploadContent"));
 		add_action("media_upload_flickr_tag_recent", array($this, "getFlickrUploadContent"));
+		add_action("media_upload_flickr_tag_favorites", array($this, "getFlickrUploadContent"));
 	}
 
 	// find only request parameters that belong to us
@@ -61,7 +62,7 @@ class FlickrTagAdmin extends FlickrTagCommon {
 		if($_REQUEST['type'] != "flickr_tag")
 			return $tabs;
 		else
-			return array("flickr_tag_recent" => "Insert a Recent Photo", "flickr_tag_set" => "Insert a Set", "flickr_tag_syntax" => "Tag Syntax");
+			return array("flickr_tag_recent" => "Insert a Recent Photo", "flickr_tag_favorites" => "Insert a Favorite Photo", "flickr_tag_set" => "Insert a Set", "flickr_tag_syntax" => "Tag Syntax");
 	}
 
 	function getFlickrUploadContent() {
@@ -371,7 +372,11 @@ class FlickrTagAdmin extends FlickrTagCommon {
 		switch($_REQUEST['tab']) {
 			default:
 			case "flickr_tag_recent":
-				$html .= $this->getIFrameContent_Recent();
+				$html .= $this->getIFrameContent_FromMethod('flickr.people.getPublicPhotos');
+				break;
+
+			case "flickr_tag_favorites":
+				$html .= $this->getIFrameContent_FromMethod('flickr.favorites.getList');
 				break;
 
 			case "flickr_tag_set":
@@ -413,11 +418,11 @@ class FlickrTagAdmin extends FlickrTagCommon {
 		return $html;
 	}
 
-	function getIFrameContent_Recent() {
+	function getIFrameContent_FromMethod($method = 'flickr.people.getPublicPhotos') {
 		$html = "";
 
 		$params = array(
-			'method'        => 'flickr.people.getPublicPhotos',
+			'method'        => $method,
 			'format'        => 'php_serial',
 			'per_page'      => '40',
 			'user_id'       => $this->optionGet("nsid")
@@ -429,10 +434,10 @@ class FlickrTagAdmin extends FlickrTagCommon {
 			foreach($r['photos']['photo'] as $number=>$photo) {
 				$img_url = "http://farm" . $photo['farm'] . ".static.flickr.com/" . $photo['server'] . "/" . $photo['id'] . "_" . $photo['secret'] . "_s.jpg";
 	
-				$html .= '<a href="#" onClick="flickrTag_insertIntoEditor(\'[flickr]photo:' . $photo['id'] . '[/flickr]\'); return false;" style="text-decoration: none; border: none;"><img src="' . $img_url . '" alt="" style="padding-right: 5px; padding-bottom: 5px;"/></a>';
+				$html .= '<a href="#" onClick="flickrTag_insertIntoEditor(\'[flickr]photo:' . $photo['id'] . '[/flickr]\'); return false;" class="flickr"><img src="' . $img_url . '" alt="" class="flickr_img thumbnail set"/></a>';
 			}
 		} else
-			$html .= $this->error("API call failed to get recent photos.");
+			$html .= $this->error("API call failed to get photos with method '" . $method . "'.");
 
 		return $html;
 	}
@@ -442,7 +447,7 @@ class FlickrTagAdmin extends FlickrTagCommon {
 
 		<strong>Usage</strong>
 
-		<p style="font-family: courier; padding: 3px; background-color: #EFEFEF;">
+		<p class="flickr_tag_syntax">
 			[flickr <em>[params]</em>]set:set id<em>[(size[,limit])]</em>[/flickr] or <br/>
 			[flickr <em>[params]</em>]tag:tag1<em>[(,|+)tag2...][@username][(size[,limit])]</em>[/flickr] or <br/>
 			[flickr <em>[params]</em>]photo:photo id<em>[(size[,limit])]</em>[/flickr] <br/>
@@ -460,7 +465,7 @@ class FlickrTagAdmin extends FlickrTagCommon {
 			To show "medium" photos tagged with "railcar" OR "train" from anyone, use:
 		</p>
 
-		<p style="font-family: courier; padding: 3px; background-color: #EFEFEF;">
+		<p class="flickr_tag_syntax">
 			[flickr]tag:railcar,train(medium)[/flickr]
 		</p>
 
@@ -468,7 +473,7 @@ class FlickrTagAdmin extends FlickrTagCommon {
 			To show a maximum of 20 "large" photos tagged with "railcar" AND "adm" from the user "anemergencystop", padding images with 10 pixels on all sides, use:
 		</p>
 
-		<p style="font-family: courier; padding: 3px; background-color: #EFEFEF;">
+		<p class="flickr_tag_syntax">
 			[flickr style="padding: 10px;"]tag:railcar+adm@anemergencystop(large, 20)[/flickr]
 		</p>
 EOF;

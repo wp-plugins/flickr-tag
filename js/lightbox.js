@@ -62,8 +62,8 @@
 //
 //	Configuration
 //
-var fileLoadingImage = "../images/loading.gif";		
-var fileBottomNavCloseImage = "../images/closelabel.gif";
+var fileLoadingImage = flickr_tag_root + "/images/loading.gif";		
+var fileBottomNavCloseImage = flickr_tag_root + "/images/closelabel.gif";
 
 var overlayOpacity = 0.8;	// controls transparency of shadow overlay
 

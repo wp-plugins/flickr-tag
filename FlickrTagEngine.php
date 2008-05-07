@@ -29,6 +29,11 @@ class FlickrTagEngine extends FlickrTagCommon {
 	function getPublicHead() {
 		if($this->optionGet('link_action') == "lightbox") {
 	?>
+			<script type="text/javascript">
+				// used inside of lightbox.js
+				var flickr_tag_root = '<?php bloginfo("wpurl"); ?>/wp-content/plugins/flickr-tag/';	
+			</script>
+
 			<script type="text/javascript" src="<?php bloginfo("wpurl"); ?>/wp-content/plugins/flickr-tag/js/prototype.js"></script>
 			<script type="text/javascript" src="<?php bloginfo("wpurl"); ?>/wp-content/plugins/flickr-tag/js/scriptaculous.js?load=effects"></script>
 			<script type="text/javascript" src="<?php bloginfo("wpurl"); ?>/wp-content/plugins/flickr-tag/js/lightbox.js"></script>

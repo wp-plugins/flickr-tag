@@ -1,5 +1,15 @@
 .wrapper {
 	padding: 14px;
+	width: 640px;
+	height: 380px;
+	overflow: hidden;	
+}
+
+.flickr_tag_syntax {
+	font-family: courier; 
+	font-size: 12px;
+	padding: 3px; 
+	background-color: #EFEFEF;
 }
 
 .more {
