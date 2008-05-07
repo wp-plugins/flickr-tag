@@ -183,7 +183,7 @@ class FlickrTagEngine extends FlickrTagCommon {
 	}
 
 	function renderPhotos($result, $mode, $tag_attrs, $size, $limit) {
-		$html = "";
+		$html = '<div class="flickrTag_container">';
 		$i = null;
 
 		// limit tag or set count, if specified
@@ -257,6 +257,8 @@ class FlickrTagEngine extends FlickrTagCommon {
 			}
 		}
 
-		return $html;
+		$html .= "</div>";
+
+ 		return $html;
 	}
 }
