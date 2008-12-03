@@ -2,7 +2,7 @@
 Contributors: crimesagainstlogic
 Tags: flickr, thumbnails, tag, sets, photos, lightbox, images
 Requires at least: 2.5
-Tested up to: 2.5
+Tested up to: 2.7
 Stable tag: trunk
 
 Insert Flickr sets, tags or individual photos in your posts by using a special tag.
@@ -34,6 +34,10 @@ Or, use the "flickr" tag (syntax outlined in the popup media window).
 [standard WordPress installation method]: http://codex.wordpress.org/Managing_Plugins#Installing_Plugins
 
 == Frequently Asked Questions ==
+
+= What's new in 2.3? =
+* Compatability with 2.7.
+* Removed use of header() in admin section; should remove errors sometimes displayed on screen.
 
 = What's new in 2.2? =
 * Compatability with 2.5.
