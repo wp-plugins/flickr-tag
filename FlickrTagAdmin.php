@@ -66,6 +66,8 @@ class FlickrTagAdmin extends FlickrTagCommon {
 	}
 
 	function getFlickrUploadContent() {
+		wp_enqueue_style("media");
+
 		return wp_iframe(array($this, "getIFrameContent"));
 	}
 
@@ -220,8 +222,6 @@ class FlickrTagAdmin extends FlickrTagCommon {
 		<link href="<?php bloginfo("wpurl"); ?>/wp-content/plugins/flickr-tag/css/flickrTag.css" type="text/css" rel="stylesheet"/>
 
 		<script type="text/javascript" src="<?php bloginfo("wpurl"); ?>/wp-content/plugins/flickr-tag/js/flickrTag.js"></script>
-
-		<link rel='stylesheet' href='<?php bloginfo("wpurl"); ?>/wp-admin/css/media.css' type='text/css'/>
 	<?php
 	}
 
