@@ -146,7 +146,7 @@ class FlickrTagAdmin extends FlickrTagCommon {
 
 	function processRequest() {
 		// convert frob into token (auth. step 2)
-		if(isset($this->request['frob'])) { 
+		if(isset($this->request['frob']) && ! $this->optionGet("nsid") && ! $this->optionGet("token")) { 
 			$params = array(
 				'method'	=> 'flickr.auth.getToken',
 				'frob'		=> $this->request['frob'],
@@ -163,8 +163,6 @@ class FlickrTagAdmin extends FlickrTagCommon {
 				$this->optionSaveAll();
 			} else
 				echo $this->error("Error converting frob into token");
-					
-			header("Location: " . get_bloginfo("wpurl") . "/wp-admin/plugins.php?page=" . basename(__FILE__));
 		} else
 
 		// logout
@@ -173,8 +171,6 @@ class FlickrTagAdmin extends FlickrTagCommon {
 			$this->optionSet("nsid", null);
 
 			$this->optionSaveAll();
-
-			header("Location: " . get_bloginfo("wpurl") . "/wp-admin/plugins.php?page=" . basename(__FILE__));
 		} else
 
 		// flush cache
@@ -261,7 +257,7 @@ class FlickrTagAdmin extends FlickrTagCommon {
 							$flickr_url .= "&frob=" . $frob;
 							$flickr_url .= "&api_sig=" . md5(FLICKR_TAG_API_KEY_SS . "api_key" . FLICKR_TAG_API_KEY . "frob" . $frob . "permsread");
 				?>
-					You are not authenticated with Flickr; but authorizing this plugin with Flickr is a simple, two step process:
+					You are not authenticated with Flickr, but authorizing this plugin with Flickr is a simple, two step process:
 
 					<p id="step1" class="current">
 					<strong>Step 1:</strong> <a href="<?php echo $flickr_url; ?>" onClick="this.parentNode.className='disabled'; document.getElementById('step2').className='current';" target="_new">Authorize this application to access Flickr</a>. <em>This will open a new window. When you are finished, come back to this page.</em>
