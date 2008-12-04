@@ -311,7 +311,7 @@ class FlickrTagAdmin extends FlickrTagCommon {
 					<input type="radio" name="flickr_tag_link_action" value="none" <?php if($this->request['link_action'] != "flickr" && $this->request['link_action'] != "lightbox") echo "checked"; ?>> Do nothing.
 
 					<p class="more">
-						<strong>Note that if Lightbox display mode is selected, tooltips on inline photos are disabled--tooltip content is shown as a caption in the Lightbox.</strong> Sorry, both cannot be enabled at the same time due to technical limitations.
+						<strong>Note that if Lightbox display mode is selected, tooltips on inline photos are disabled&mdash;tooltip content is shown as a caption in the Lightbox.</strong> Sorry, both cannot be enabled at the same time due to technical limitations.
 					</p>
 				</td>
 				</tr>
