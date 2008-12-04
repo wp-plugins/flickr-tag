@@ -145,6 +145,8 @@ class FlickrTagAdmin extends FlickrTagCommon {
 	}
 
 	function processRequest() {
+		$has_error = false;
+
 		// convert frob into token (auth. step 2)
 		if(isset($this->request['frob']) && ! $this->optionGet("nsid") && ! $this->optionGet("token")) { 
 			$params = array(
@@ -182,8 +184,6 @@ class FlickrTagAdmin extends FlickrTagCommon {
 
 		// save options
 		if(isset($this->request["save"])) {
-			$has_error = false;
-
 			if($this->isDisplayLimit($this->request["tag_limit"]) === null) {
 				echo '<div class="error fade"><p><strong>The display limit for tags must be a number.</strong></p></div>';
 				$has_error = true;
@@ -203,13 +203,12 @@ class FlickrTagAdmin extends FlickrTagCommon {
 
 				echo '<div class="updated fade"><p><strong>Settings successfully saved.</strong></p></div>';
 			}
+		}
 
-		// initial load
-		} else {
-			// set request variables equal to config to populate form initially
+		// initial load; if in error, leave old values there
+		if(! $has_error)
 			foreach($this->config as $key=>$value)
 				$this->request[$key] = $value;
-		}
 	}
 
 	function getAdminHead() {
@@ -239,7 +238,7 @@ class FlickrTagAdmin extends FlickrTagCommon {
 					$current_user = $this->getCurrentUser();
 
 					if($current_user) {
-						echo 'You are authenticated to Flickr as <a href="http://www.flickr.com/people/' . $current_user['auth']['user']['nsid'] . '" target="_new">' . $current_user['auth']['user']['username'] . '</a> (<a href="' . get_bloginfo("wpurl") . '/wp-admin/plugins.php?page=' . basename(__FILE__) . '&flickr_tag_logout=true">logout</a>).';
+						echo '<p>You are authenticated to Flickr as <a href="http://www.flickr.com/people/' . $current_user['auth']['user']['nsid'] . '" target="_new">' . $current_user['auth']['user']['username'] . '</a> (<a href="' . get_bloginfo("wpurl") . '/wp-admin/plugins.php?page=' . basename(__FILE__) . '&flickr_tag_logout=true">logout</a>).</p>';
 					} else {
 						$params = array(
 							'method'	=> 'flickr.auth.getFrob',
@@ -257,7 +256,9 @@ class FlickrTagAdmin extends FlickrTagCommon {
 							$flickr_url .= "&frob=" . $frob;
 							$flickr_url .= "&api_sig=" . md5(FLICKR_TAG_API_KEY_SS . "api_key" . FLICKR_TAG_API_KEY . "frob" . $frob . "permsread");
 				?>
+					<p>
 					You are not authenticated with Flickr, but authorizing this plugin with Flickr is a simple, two step process:
+					</p>
 
 					<p id="step1" class="current">
 					<strong>Step 1:</strong> <a href="<?php echo $flickr_url; ?>" onClick="this.parentNode.className='disabled'; document.getElementById('step2').className='current';" target="_new">Authorize this application to access Flickr</a>. <em>This will open a new window. When you are finished, come back to this page.</em>
