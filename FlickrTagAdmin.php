@@ -257,7 +257,7 @@ class FlickrTagAdmin extends FlickrTagCommon {
 							$flickr_url .= "&api_sig=" . md5(FLICKR_TAG_API_KEY_SS . "api_key" . FLICKR_TAG_API_KEY . "frob" . $frob . "permsread");
 				?>
 					<p>
-					You are not authenticated with Flickr, but authorizing this plugin with Flickr is a simple, two step process:
+					You are not authenticated with Flickr, but authorizing this plugin with Flickr is a simple two step process:
 					</p>
 
 					<p id="step1" class="current">
