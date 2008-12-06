@@ -369,7 +369,7 @@ class FlickrTagAdmin extends FlickrTagCommon {
 	function getIFrameContent() {
 		$html = media_upload_header();
 
-		$html .= '<div class="wrapper">';
+		$html .= '<div class="wrapper flickrTag_container">';
 
 		switch($_REQUEST['tab']) {
 			default:
