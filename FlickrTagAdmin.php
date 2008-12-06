@@ -306,12 +306,17 @@ class FlickrTagAdmin extends FlickrTagCommon {
 				<td>
 					<input type="radio" name="flickr_tag_link_action" value="flickr" <?php if($this->request['link_action'] == "flickr") echo "checked"; ?>> Link to the photo's Flickr page.
 					<br/>
+
 					<input type="radio" name="flickr_tag_link_action" value="lightbox" <?php if($this->request['link_action'] == "lightbox") echo "checked"; ?>> Display a larger version in a <a href="http://www.huddletogether.com/projects/lightbox2/" target="_new">Lightbox</a>.
 					<br/>
-					<input type="radio" name="flickr_tag_link_action" value="none" <?php if($this->request['link_action'] != "flickr" && $this->request['link_action'] != "lightbox") echo "checked"; ?>> Do nothing.
+
+					<input type="radio" name="flickr_tag_link_action" value="lightbox_plugin" <?php if($this->request['link_action'] == "lightbox_plugin") echo "checked"; ?>> Generate Lightbox-compatable HTML for use by another Lightbox plugin that is installed. 
+					<br/>
+
+					<input type="radio" name="flickr_tag_link_action" value="none" <?php if($this->request['link_action'] != "flickr" && $this->request['link_action'] != "lightbox" && $this->request['link_action'] != "lightbox_plugin") echo "checked"; ?>> Do nothing.
 
 					<p class="more">
-						<strong>Note that if Lightbox display mode is selected, tooltips on inline photos are disabled&mdash;tooltip content is shown as a caption in the Lightbox.</strong> Sorry, both cannot be enabled at the same time due to technical limitations.
+						If Lightbox display mode is selected, tooltips on inline photos are disabled&mdash;tooltip content is shown as a caption in the Lightbox. Lightbox plugin mode requires another Lightbox Wordpress plugin to be installed.
 					</p>
 				</td>
 				</tr>
@@ -444,7 +449,7 @@ class FlickrTagAdmin extends FlickrTagCommon {
 
 		<strong>Usage</strong>
 
-		<p class="flickr_tag_syntax">
+		<p class="syntax">
 			[flickr <em>[params]</em>]set:set id<em>[(size[,limit])]</em>[/flickr] or <br/>
 			[flickr <em>[params]</em>]tag:tag1<em>[(,|+)tag2...][@username][(size[,limit])]</em>[/flickr] or <br/>
 			[flickr <em>[params]</em>]photo:photo id<em>[(size[,limit])]</em>[/flickr] <br/>
@@ -462,7 +467,7 @@ class FlickrTagAdmin extends FlickrTagCommon {
 			To show "medium" photos tagged with "railcar" OR "train" from anyone, use:
 		</p>
 
-		<p class="flickr_tag_syntax">
+		<p class="syntax">
 			[flickr]tag:railcar,train(medium)[/flickr]
 		</p>
 
@@ -470,7 +475,7 @@ class FlickrTagAdmin extends FlickrTagCommon {
 			To show a maximum of 20 "large" photos tagged with "railcar" AND "adm" from the user "anemergencystop", padding images with 10 pixels on all sides, use:
 		</p>
 
-		<p class="flickr_tag_syntax">
+		<p class="syntax">
 			[flickr style="padding: 10px;"]tag:railcar+adm@anemergencystop(large, 20)[/flickr]
 		</p>
 EOF;

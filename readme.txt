@@ -38,6 +38,11 @@ Or, use the "flickr" tag (syntax outlined in the popup media window).
 = What's new in 2.3? =
 * Compatability with 2.7.
 * Removed use of header() in admin section; should remove errors sometimes displayed on screen.
+* Increased compatability with other plugins/JavaScript/CSS code (namespaces).
+* New Lightbox plugin mode--don't need to use Flickr Tag-builtin lightbox.
+* Modified HTML genration to play nicely with Wordpress-generated HTML.
+* Rewritten tooltip code--no YUI dependency.
+* Used script dependency function of Wordpress to avoid script contention issues (two jQuery installs, etc.).
 
 = What's new in 2.2? =
 * Compatability with 2.5.
