@@ -41,7 +41,7 @@ class FlickrTagEngine extends FlickrTagCommon {
 
 			<link rel="stylesheet" href="<?php bloginfo("wpurl"); ?>/wp-content/plugins/flickr-tag/css/lightbox.css" type="text/css" media="screen" />
 	<?php
-		} else if($this->optionGet('link_action') == "flickr" || $this->optionGet('link_action') == "none") {
+		} else if($this->optionGet('link_action') == "flickr") {
 			wp_enqueue_script("jquery");
 
 			wp_print_scripts();
