@@ -1,13 +1,14 @@
 jQuery(document).ready(function() {
 	jQuery(".flickrTag_container img.flickr").each(function(i) {
-		if(this.title) {
-			var e = jQuery(this);
+		var e = jQuery(this);
+
+		if(e.attr("title") != "") {
 			var b = jQuery("body");
 
 			if(! this.id)
 				this.id = Math.ceil(Math.random() * 100000000);
 
-			b.after("<div class='flickrTag_tooltip' id='tooltip_" + this.id + "'><p class='text'>" + this.title + "</p></div>");
+			b.after("<div class='flickrTag_tooltip' id='tooltip_" + this.id + "'><p class='text'>" + e.attr("title") + "</p></div>");
 			
 			var n = jQuery("#tooltip_" + this.id);
 
