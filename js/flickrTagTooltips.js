@@ -12,8 +12,8 @@ jQuery(document).ready(function() {
 			var n = jQuery("#tooltip_" + this.id);
 
 			n.hide();
-			n.css("left", e.offset().left);
-			n.css("top", e.offset().top + e.height());
+			n.css("left", e.offset().left + e.scrollLeft());
+			n.css("top", e.offset().top + e.height() + e.scrollTop());
 		}
 	});
 
