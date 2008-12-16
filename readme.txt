@@ -43,6 +43,9 @@ Or, use the "flickr" tag (syntax outlined in the popup media window).
 * Modified HTML genration to play nicely with Wordpress-generated HTML.
 * Rewritten tooltip code--no YUI dependency.
 * Used script dependency function of Wordpress to avoid script contention issues (two jQuery installs, etc.).
+* ALT tags now contain photo title
+* Lightbox updated
+* Better cross-platform CSS 
 
 = What's new in 2.2? =
 * Compatability with 2.5.
