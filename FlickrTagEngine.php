@@ -29,6 +29,7 @@ class FlickrTagEngine extends FlickrTagCommon {
 	function getPublicHead() {
 		if($this->optionGet('link_action') == "lightbox") {
 			wp_enqueue_script("scriptaculous-effects");
+			wp_enqueue_script("scriptaculous-builder");
 
 			wp_print_scripts();
 	?>
