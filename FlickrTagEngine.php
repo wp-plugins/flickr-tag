@@ -235,7 +235,7 @@ class FlickrTagEngine extends FlickrTagCommon {
 
 					$rel = "lightbox" . (($mode == "tag" || $mode == "set") ? "[" . $lightbox_uid . "]" : "");
 
-					$html .= '<a href="' . $a_url . '" class="flickr" title="' . htmlentities($title, ENT_COMPAT, get_option("blog_charset")) . '" rel="' . $rel . '"><img src="' . $img_url . '" alt="" class="flickr ' . $this->optionGet($mode . '_size') . ' ' . $mode . '" ' . $extra . '/></a>';
+					$html .= '<a href="' . $a_url . '" class="flickr" title="' . htmlentities($title, ENT_COMPAT, get_option("blog_charset")) . '" rel="' . $rel . '"><img src="' . $img_url . '" alt="' . $photo['title'] . '" class="flickr ' . $this->optionGet($mode . '_size') . ' ' . $mode . '" ' . $extra . '/></a>';
 
 					break;
 
@@ -243,7 +243,7 @@ class FlickrTagEngine extends FlickrTagCommon {
 					if($title)
 						$extra .= ' title="' . htmlentities($title, ENT_COMPAT, get_option("blog_charset")) . '"';
 
-					$html .= '<a href="' . $a_url . '" class="flickr"><img src="' . $img_url . '" alt="" class="flickr ' . $this->optionGet($mode . '_size') . ' ' . $mode . '" ' . $extra . '/></a>';
+					$html .= '<a href="' . $a_url . '" class="flickr"><img src="' . $img_url . '" alt="' . $photo['title'] . '" class="flickr ' . $this->optionGet($mode . '_size') . ' ' . $mode . '" ' . $extra . '/></a>';
 					
 					break;
 
@@ -252,7 +252,7 @@ class FlickrTagEngine extends FlickrTagCommon {
 					if($title)
 						$extra .= ' title="' . htmlentities($title, ENT_COMPAT, get_option("blog_charset")) . '"';
 
-					$html .= '<img src="' . $img_url . '" alt="" class="flickr ' . $this->optionGet($mode . '_size') . ' ' . $mode . '" ' . $extra . '/>';
+					$html .= '<img src="' . $img_url . '" alt="' . $photo['title'] . '" class="flickr ' . $this->optionGet($mode . '_size') . ' ' . $mode . '" ' . $extra . '/>';
 
 					break;
 			}
