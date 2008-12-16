@@ -2,6 +2,31 @@
 	border: 0px;
 }
 
+.flickrTag_container img.square {
+	width: 75px;
+	height: 75px;
+}
+
+.flickrTag_container img.thumbnail {
+	width: 100px;
+	height: 75px;
+}
+
+.flickrTag_container img.small {
+	width: 240px;
+	height: 180px;
+}
+
+.flickrTag_container img.medium {
+	width: 500px;
+	height: 375px;
+}
+
+.flickrTag_container img.large {
+	width: 1024px;
+	height: 768px;
+}
+
 .flickrTag_container img.set, .flickrTag_container img.tag {
 	margin-right: 5px;
 	margin-bottom: 5px;
