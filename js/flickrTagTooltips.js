@@ -9,19 +9,23 @@ jQuery(document).ready(function() {
 				this.id = Math.ceil(Math.random() * 100000000);
 
 			b.after("<div class='flickrTag_tooltip' id='tooltip_" + this.id + "'><p class='text'>" + e.attr("title") + "</p></div>");
-			
+
 			var n = jQuery("#tooltip_" + this.id);
 
 			n.hide();
-			n.css("left", e.offset().left + e.scrollLeft());
-			n.css("top", e.offset().top + e.height() + e.scrollTop());
 		}
 	});
 
 	jQuery(".flickrTag_container img.flickr").mouseover(function(event) {
 		event.preventDefault();
 
-		jQuery("#tooltip_" + this.id).show();
+		// we move the bubble now because we can't be sure the images have loaded until now (and thus their dimensions are unknown)
+		var n = jQuery("#tooltip_" + this.id);
+		var e = jQuery(this);
+
+		n.css("left", e.offset().left + e.scrollLeft());
+		n.css("top", e.offset().top + e.height() + e.scrollTop());
+		n.show();
 	});
 
 	jQuery(".flickrTag_container img.flickr").mouseout(function(event) {
