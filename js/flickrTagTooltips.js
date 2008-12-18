@@ -5,10 +5,11 @@ jQuery(document).ready(function() {
 		if(e.attr("title") != "") {
 			var b = jQuery("body");
 
+			// assign an id to the image if it doesn't have one already
 			if(! this.id)
 				this.id = Math.ceil(Math.random() * 100000000);
 
-			b.after("<div class='flickrTag_tooltip' id='tooltip_" + this.id + "'><p class='text'>" + e.attr("title") + "</p></div>");
+			b.append("<div class='flickrTag_tooltip' id='tooltip_" + this.id + "'><p class='text'>" + e.attr("title") + "</p></div>");
 
 			var n = jQuery("#tooltip_" + this.id);
 
@@ -20,8 +21,8 @@ jQuery(document).ready(function() {
 		event.preventDefault();
 
 		// we move the bubble now because we can't be sure the images have loaded until now (and thus their dimensions are unknown)
-		var n = jQuery("#tooltip_" + this.id);
 		var e = jQuery(this);
+		var n = jQuery("#tooltip_" + this.id);
 
 		n.css("left", e.offset().left + e.scrollLeft());
 		n.css("top", e.offset().top + e.height() + e.scrollTop());
@@ -34,4 +35,3 @@ jQuery(document).ready(function() {
 		jQuery("#tooltip_" + this.id).hide();
 	});
 });
-
