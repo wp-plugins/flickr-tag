@@ -74,7 +74,7 @@ class FlickrTagEngine extends FlickrTagCommon {
 		} else
 			$param = $tag;
 
-		if($mode != "set" && $mode != "tag" && $mode != "photo")
+		if($mode != "set" && $mode != "tag" && $mode != "photo" && $mode != "photostream")
 			$mode = "photo";
 
 		// set size and limit defaults
@@ -84,10 +84,10 @@ class FlickrTagEngine extends FlickrTagCommon {
 		// are size and or limit overrides are specified?
 		$p = strpos($param, "(");
 		
-		if($p) {
+		if($p !== false) {
 			$p2 = strpos($param, ")");
 
-			if($p2) {
+			if($p2 !== false) {
 				$overrides = split(",", substr($param, $p + 1, $p2 - $p - 1));
 			
 				if($this->isPhotoSize(trim($overrides[0])) !== null)
@@ -116,6 +116,37 @@ class FlickrTagEngine extends FlickrTagCommon {
 					return $this->error("Bad call to display set '" . $param . "'");
 
 				return $this->renderPhotos($r['photoset'], $mode, $tag_attrs, $size, $limit);
+
+			case "photostream":
+				$nsid = $this->optionGet('nsid');
+
+                                if($param) {
+                                        $params2 = array(
+                                                'username'              => $param,                           
+                                                'method'                => 'flickr.people.findByUsername',
+                                                'format'                => 'php_serial'
+                                        );
+
+                                        $r = $this->apiCall($params2);
+
+                                        if(! $r)
+                                                return $this->error("Call to resolve user '" . $param . "' to an NSID failed.");
+                                        else
+                                                $nsid = $r['user']['nsid'];
+                                }
+
+				$params = array(
+					'method'		=> 'flickr.people.getPublicPhotos',
+					'format'		=> 'php_serial',
+					'user_id'		=> $nsid
+				);
+
+				$r = $this->apiCall($params);
+
+				if(! $r)
+					return $this->error("Bad call to display photostream");
+
+				return $this->renderPhotos($r['photos'], $mode, $tag_attrs, $size, $limit);
 
 			case "tag":
 				$p = strpos($param, "@");
@@ -187,7 +218,7 @@ class FlickrTagEngine extends FlickrTagCommon {
 		$i = null;
 
 		// limit tag or set count, if specified
-		if($mode == "tag" || $mode == "set")
+		if($mode == "tag" || $mode == "set" || $mode == "photostream")
 			$i = @array_slice($result['photo'], 0, $limit);
 		else 
 			$i = array($result);

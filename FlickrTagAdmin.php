@@ -295,6 +295,12 @@ class FlickrTagAdmin extends FlickrTagCommon {
 				$this->getDisplayDefaultsOptionsHTML("tag");
 			?>
 
+			<h3>Photostream Display Options</h3>
+
+			<?php
+				$this->getDisplayDefaultsOptionsHTML("photostream");
+			?>
+
 			<h3>Photo Behavior</h3>
 
 			<table class="form-table">
@@ -453,6 +459,7 @@ class FlickrTagAdmin extends FlickrTagCommon {
 			[flickr <em>[params]</em>]set:set id<em>[(size[,limit])]</em>[/flickr] or <br/>
 			[flickr <em>[params]</em>]tag:tag1<em>[(,|+)tag2...][@username][(size[,limit])]</em>[/flickr] or <br/>
 			[flickr <em>[params]</em>]photo:photo id<em>[(size[,limit])]</em>[/flickr] <br/>
+			[flickr <em>[params]</em>]photostream:[username]<em>[(size[,limit])]</em>[/flickr] <br/>
 		</p>
 
 		<strong>Notes</strong>

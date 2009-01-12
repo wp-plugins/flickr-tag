@@ -35,6 +35,11 @@ Or, use the "flickr" tag (syntax outlined in the popup media window).
 
 == Frequently Asked Questions ==
 
+= What's new in 2.4? =
+* Fixed issue with insertion of images into editor.
+* Better error reporting.
+* New photostream option.
+
 = What's new in 2.3? =
 * Compatability with 2.7.
 * Removed use of header() in admin section; should remove errors sometimes displayed on screen.

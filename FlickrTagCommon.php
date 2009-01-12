@@ -40,6 +40,10 @@ class FlickrTagCommon {
 				"set_tooltip" => "description",
 				"set_limit" => 50,
 
+				"photostream_size" => "square",
+				"photostream_tooltip" => "description",
+				"photostream_limit" => 50,
+
 				"tag_size" => "square",
 				"tag_tooltip" => "description",
 				"tag_limit" => 50
