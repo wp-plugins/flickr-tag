@@ -458,7 +458,7 @@ class FlickrTagAdmin extends FlickrTagCommon {
 		<p class="syntax">
 			[flickr <em>[params]</em>]set:set id<em>[(size[,limit])]</em>[/flickr] or <br/>
 			[flickr <em>[params]</em>]tag:tag1<em>[(,|+)tag2...][@username][(size[,limit])]</em>[/flickr] or <br/>
-			[flickr <em>[params]</em>]photo:photo id<em>[(size[,limit])]</em>[/flickr] <br/>
+			[flickr <em>[params]</em>]photo:photo id<em>[(size[,limit])]</em>[/flickr] or <br/>
 			[flickr <em>[params]</em>]photostream:[username]<em>[(size[,limit])]</em>[/flickr] <br/>
 		</p>
 
