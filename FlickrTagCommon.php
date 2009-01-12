@@ -185,10 +185,18 @@ class FlickrTagCommon {
 
 			// save serialized response to cache
 			if($cache) {
-				if(! is_dir(FLICKR_TAG_CACHE_DIR))
+				if(! is_dir(FLICKR_TAG_CACHE_DIR)) {
 					mkdir(FLICKR_TAG_CACHE_DIR);
 
-				file_put_contents($cache_file, $r, LOCK_EX);
+					// FIXME: insecure...
+					chmod(FLICKR_TAG_CACHE_DIR, 0777);
+				}
+
+				if(file_put_contents($cache_file, $r, LOCK_EX) === FALSE) {
+					$this->error_state = array("message" => "Writing to " . $cache_file . " failed. Make sure the cache directory is writable by the webserver.");
+	
+					return null;
+				}
 			}
 		}
 
