@@ -54,7 +54,7 @@ class FlickrTagAdmin extends FlickrTagCommon {
 	function getButtonContext($html) {
 	        global $post_ID, $temp_ID;
         
-		return $html . '<a href="media-upload.php?post_id=' . (int)(0 == $post_ID ? $temp_ID : $post_ID) . '&amp;type=flickr_tag&amp;TB_iframe=true&amp;height=450&amp;width=640" class="thickbox" title="Add an image from Flickr"><img src="' . get_bloginfo("wpurl") . '/wp-content/plugins/flickr-tag/images/flickr-button.gif"/></a>';
+		return $html . '<a href="media-upload.php?post_id=' . (int)(0 == $post_ID ? $temp_ID : $post_ID) . '&amp;type=flickr_tag&amp;TB_iframe=true&amp;height=450&amp;width=640" class="thickbox" title="Insert an image from Flickr"><img src="' . get_bloginfo("wpurl") . '/wp-content/plugins/flickr-tag/images/flickr-button.gif"/></a>';
 	}
 
 	function getMediaUploadTabs($tabs) {
