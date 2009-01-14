@@ -194,6 +194,11 @@ class FlickrTagAdmin extends FlickrTagCommon {
 				$has_error = true;
 			}
 
+			if($this->isDisplayLimit($this->request["photostream_limit"]) === null) {
+				echo '<div class="error fade"><p><strong>The display limit for photostreams must be a number.</strong></p></div>';
+				$has_error = true;
+			}
+
 			if(! $has_error) {
 				foreach($this->config as $key=>$value)
 					if($this->request[$key])
