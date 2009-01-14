@@ -44,6 +44,10 @@ class FlickrTagCommon {
 				"photostream_tooltip" => "description",
 				"photostream_limit" => 50,
 
+				"group_size" => "square",
+				"group_tooltip" => "description",
+				"group_limit" => 50,
+
 				"tag_size" => "square",
 				"tag_tooltip" => "description",
 				"tag_limit" => 50
@@ -84,7 +88,7 @@ class FlickrTagCommon {
 	}
 
 	function isDisplayLimit($value) {
-		if(ctype_digit($value))
+		if(ctype_digit($value) && $value <= 100)
 			return $value;
 		else
 			return null;
@@ -190,10 +194,8 @@ class FlickrTagCommon {
 			// save serialized response to cache
 			if($cache) {
 				if(! is_dir(FLICKR_TAG_CACHE_DIR)) {
-					mkdir(FLICKR_TAG_CACHE_DIR);
-
-					// FIXME: insecure...
-					chmod(FLICKR_TAG_CACHE_DIR, 0777);
+					@mkdir(FLICKR_TAG_CACHE_DIR);
+					@chmod(FLICKR_TAG_CACHE_DIR, 0755);
 				}
 
 				if(file_put_contents($cache_file, $r, LOCK_EX) === FALSE) {

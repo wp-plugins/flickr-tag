@@ -26,11 +26,8 @@ class FlickrTagAdmin extends FlickrTagCommon {
 		$this->getRequest();
 
         	add_action("admin_menu", array($this, "getAdminMenu"));
-
 		add_action("admin_print_scripts", array($this, "getAdminHead"));
-        	
-		add_action('media_buttons_context', array($this, "getButtonContext"));
-
+       		add_action('media_buttons_context', array($this, "getButtonContext"));
 		add_action("media_upload_tabs", array($this, "getMediaUploadTabs"), 99); 
 		add_action("media_upload_flickr_tag", array($this, "getFlickrUploadContent"));
 		add_action("media_upload_flickr_tag_syntax", array($this, "getFlickrUploadContent"));
@@ -102,7 +99,7 @@ class FlickrTagAdmin extends FlickrTagCommon {
 			</tr>
 
 	<?php 
-		if($entity != "photo") { 
+		if(isset($this->config[$entity . "_limit"])) {
 	?>
 			<tr valign="top">
 			<th scope="row">
@@ -164,7 +161,7 @@ class FlickrTagAdmin extends FlickrTagCommon {
 
 				$this->optionSaveAll();
 			} else
-				echo $this->error("Error converting frob into token");
+				echo $this->error("Error converting frob into token; authentication failed");
 		} else
 
 		// logout
@@ -185,17 +182,22 @@ class FlickrTagAdmin extends FlickrTagCommon {
 		// save options
 		if(isset($this->request["save"])) {
 			if($this->isDisplayLimit($this->request["tag_limit"]) === null) {
-				echo '<div class="error fade"><p><strong>The display limit for tags must be a number.</strong></p></div>';
+				echo '<div class="error fade"><p><strong>The display limit for tags must be a number less than or equal to 100.</strong></p></div>';
 				$has_error = true;
 			}
 
 			if($this->isDisplayLimit($this->request["set_limit"]) === null) {
-				echo '<div class="error fade"><p><strong>The display limit for sets must be a number.</strong></p></div>';
+				echo '<div class="error fade"><p><strong>The display limit for sets must be a number less than or equal to 100.</strong></p></div>';
 				$has_error = true;
 			}
 
 			if($this->isDisplayLimit($this->request["photostream_limit"]) === null) {
-				echo '<div class="error fade"><p><strong>The display limit for photostreams must be a number.</strong></p></div>';
+				echo '<div class="error fade"><p><strong>The display limit for photostreams must be a number less than or equal to 100.</strong></p></div>';
+				$has_error = true;
+			}
+
+			if($this->isDisplayLimit($this->request["group_limit"]) === null) {
+				echo '<div class="error fade"><p><strong>The display limit for group pools must be a number less than or equal to 100.</strong></p></div>';
 				$has_error = true;
 			}
 
@@ -274,7 +276,7 @@ class FlickrTagAdmin extends FlickrTagCommon {
 					</p>	
 				<?php
 						} else
-							echo $this->error("Error getting frob");
+							echo $this->error("Error getting frob; authentication aborted");
 					}
 				?>
 				</td>
@@ -304,6 +306,12 @@ class FlickrTagAdmin extends FlickrTagCommon {
 
 			<?php
 				$this->getDisplayDefaultsOptionsHTML("photostream");
+			?>
+
+			<h3>Group Pool Display Options</h3>
+
+			<?php
+				$this->getDisplayDefaultsOptionsHTML("group");
 			?>
 
 			<h3>Photo Behavior</h3>
@@ -464,13 +472,14 @@ class FlickrTagAdmin extends FlickrTagCommon {
 			[flickr <em>[params]</em>]set:set id<em>[(size[,limit])]</em>[/flickr] or <br/>
 			[flickr <em>[params]</em>]tag:tag1<em>[(,|+)tag2...][@username][(size[,limit])]</em>[/flickr] or <br/>
 			[flickr <em>[params]</em>]photo:photo id<em>[(size[,limit])]</em>[/flickr] or <br/>
-			[flickr <em>[params]</em>]photostream:[username]<em>[(size[,limit])]</em>[/flickr] <br/>
+			[flickr <em>[params]</em>]photostream:<em>[username][(size[,limit])]</em>[/flickr] or <br/>
+			[flickr <em>[params]</em>]group:group name<em>[(size[,limit])]</em>[/flickr] <br/>
 		</p>
 
 		<strong>Notes</strong>
 
 		<p>
-			Any parameters (<em>[params]</em>) you add to the flickr tag (e.g. "style" or "alt") are added to the inserted image tag(s). If no mode is provided, "photo" is assumed (depricated). 
+			Any parameters (<em>[params]</em>) you add to the flickr tag (e.g. "style" or "alt") are added to the inserted image tag(s). 
 		<p>
 
 		<strong>Examples</strong>

@@ -2,7 +2,7 @@
 	border: 0px;
 }
 
-.flickrTag_container img.set, .flickrTag_container img.tag, .flickrTag_container img.photostream {
+.flickrTag_container img.set, .flickrTag_container img.tag, .flickrTag_container img.photostream, .flickrTag_container img.group {
 	margin-right: 5px;
 	margin-bottom: 5px;
 }

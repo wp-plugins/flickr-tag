@@ -39,6 +39,7 @@ Or, use the "flickr" tag (syntax outlined in the popup media window).
 * Fixed issue with insertion of images into editor.
 * Better error reporting.
 * New photostream option.
+* New group pool option.
 
 = What's new in 2.3? =
 * Compatability with 2.7.

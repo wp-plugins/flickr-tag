@@ -53,6 +53,7 @@ class FlickrTagEngine extends FlickrTagCommon {
 	<?php 
 		}
 	?>
+
 		<link href="<?php bloginfo("wpurl"); ?>/wp-content/plugins/flickr-tag/css/flickrTag.css" type="text/css" rel="stylesheet"/>
 	<?php
 	}
@@ -62,26 +63,28 @@ class FlickrTagEngine extends FlickrTagCommon {
 	}
 
 	function renderTag($tag, $tag_attrs = null) {
+		// split mode and parameters
 		$mode = null;
 		$param = null;
 
-		// split (optional) mode and extra parameters
 		$p = strpos($tag, ":");
 
-		if($p) {
+		if($p !== false) {
 			$mode = strtolower(substr($tag, 0, $p));
 			$param = substr($tag, $p + 1);
-		} else
-			$param = $tag;
+		} else {
+			$mode = $tag;
+			$param = null;
+		}
 
-		if($mode != "set" && $mode != "tag" && $mode != "photo" && $mode != "photostream")
-			$mode = "photo";
+		if($mode != "photo" && $mode != "group" && $mode != "tag" && $mode != "set" && $mode != "photostream")
+			return $this->error("The mode " . $mode . " is invalid.");
 
-		// set size and limit defaults
+
+		// set size and limit defaults, then process overrides if given
 		$size = $this->isPhotoSize($this->optionGet($mode . "_size"));
 		$limit = $this->isDisplayLimit($this->optionGet($mode . "_limit"));
 
-		// are size and or limit overrides are specified?
 		$p = strpos($param, "(");
 		
 		if($p !== false) {
@@ -101,8 +104,12 @@ class FlickrTagEngine extends FlickrTagCommon {
 			$param = substr($param, 0, $p);
 		}
 
+		
 		switch($mode) {
 			case "set":
+				if(! $param)
+					return $this->error("No photo set ID was provided.");
+
 				$params = array(
 					'photoset_id'		=> $param,
 					'privacy_filter' 	=> 1, // public
@@ -117,42 +124,14 @@ class FlickrTagEngine extends FlickrTagCommon {
 
 				return $this->renderPhotos($r['photoset'], $mode, $tag_attrs, $size, $limit);
 
-			case "photostream":
-				$nsid = $this->optionGet('nsid');
-
-                                if($param) {
-                                        $params2 = array(
-                                                'username'              => $param,                           
-                                                'method'                => 'flickr.people.findByUsername',
-                                                'format'                => 'php_serial'
-                                        );
-
-                                        $r = $this->apiCall($params2);
-
-                                        if(! $r)
-                                                return $this->error("Call to resolve user '" . $param . "' to an NSID failed.");
-                                        else
-                                                $nsid = $r['user']['nsid'];
-                                }
-
-				$params = array(
-					'method'		=> 'flickr.people.getPublicPhotos',
-					'format'		=> 'php_serial',
-					'user_id'		=> $nsid
-				);
-
-				$r = $this->apiCall($params);
-
-				if(! $r)
-					return $this->error("Bad call to display photostream");
-
-				return $this->renderPhotos($r['photos'], $mode, $tag_attrs, $size, $limit);
-
 			case "tag":
+				$tags = null;
+				$user = null;
+
 				$p = strpos($param, "@");
 
-				// user restriction provided...
-				if($p) {
+				// user restriction provided
+				if($p !== false) {
 					$tags = substr($param, 0, $p);
 					$user = substr($param, $p + 1);
 				} else {
@@ -160,11 +139,12 @@ class FlickrTagEngine extends FlickrTagCommon {
 					$user = null;
 				}
 
+				if(! $tags)
+					return $this->error("No tags were provided.");
+
 				$params = array(
 					'method'		=> 'flickr.photos.search',
-
-					// the flickr API mandates tags be separated by a comma when using multiple tags
-					'tags'			=> str_replace("+", ",", $tags),
+					'tags'			=> str_replace("+", ",", $tags), // flickr requires tags be separated by a comma
 					'format'		=> 'php_serial',
 					'sort'			=> 'relevance'
 				);
@@ -174,7 +154,8 @@ class FlickrTagEngine extends FlickrTagCommon {
 					$params['tag_mode'] = "all";
 				else
 					$params['tag_mode'] = "any";
-
+				
+				// lookup username provided, add nsid to request params
 				if($user) {
 					$params2 = array(
 						'username'		=> $user,
@@ -197,7 +178,42 @@ class FlickrTagEngine extends FlickrTagCommon {
 
 				return $this->renderPhotos($r['photos'], $mode, $tag_attrs, $size, $limit);
 
+			case "photostream":
+				$params = array(
+					'method'		=> 'flickr.people.getPublicPhotos',
+					'format'		=> 'php_serial',
+				);
+
+				// lookup username provided, add nsid to request params
+                                if($param) {
+                                        $params2 = array(
+                                                'username'              => $param,                           
+                                                'method'                => 'flickr.people.findByUsername',
+                                                'format'                => 'php_serial'
+                                        );
+
+                                        $r = $this->apiCall($params2);
+
+                                        if(! $r)
+                                                return $this->error("Call to resolve user '" . $param . "' to an NSID failed.");
+                                        else
+						$params['user_id'] = $r['user']['nsid'];
+                                } else {
+					// default to self
+					$params['user_id'] = $this->optionGet('nsid');
+				}
+
+				$r = $this->apiCall($params);
+
+				if(! $r)
+					return $this->error("Bad call to display photostream");
+
+				return $this->renderPhotos($r['photos'], $mode, $tag_attrs, $size, $limit);
+
 			case "photo":
+				if(! $param)
+					return $this->error("No photo ID was provided.");
+
 				$params = array(
 					'photo_id'		=> $param,
 					'method'		=> 'flickr.photos.getInfo',
@@ -210,15 +226,78 @@ class FlickrTagEngine extends FlickrTagCommon {
 					return $this->error("Call to display photo '" . $param . "' failed.");
 
 				return $this->renderPhotos($r['photo'], $mode, $tag_attrs, $size, $limit);
+
+			case "group":
+				$group = null;
+				$user = null;
+
+				$p = strpos($param, "@");
+
+				// user restriction provided
+				if($p) {
+					$group = substr($param, 0, $p);
+					$user = substr($param, $p + 1);
+				} else {
+					$group = $param;
+					$user = null;
+				}
+
+				if(! $group)
+					return $this->error("No group was provided.");
+
+				$params = array(
+					'method'		=> 'flickr.groups.pools.getPhotos',
+					'format'		=> 'php_serial',
+				);
+
+				// convert group name to nsid
+				$params2 = array(
+					'text'			=> $group,
+					'method'		=> 'flickr.groups.search',
+					'format'		=> 'php_serial'
+				);
+
+				$r = $this->apiCall($params2);
+
+				if(! $r)
+					return $this->error("Call to resolve group '" . $group . "' to an NSID failed.");
+				else {
+					if(count($r['groups'][group]) > 0)
+						$params['group_id'] = $r['groups'][group][0]['nsid'];
+					else
+						return $this->error("No group matching '" . $group . "' found.");
+				}
+
+				if($user) {
+					$params3 = array(
+						'username'		=> $user,
+						'method'		=> 'flickr.people.findByUsername',
+						'format'		=> 'php_serial'
+					);
+
+					$r = $this->apiCall($params3);
+
+					if(! $r)
+						return $this->error("Call to resolve user '" . $user . "' to an NSID failed.");
+					else
+						$params['user_id'] = $r['user']['nsid'];
+				}
+
+				$r = $this->apiCall($params);
+
+				if(! $r)
+					return $this->error("Call to display group with ID '" . $params['group_id'] . "' failed.");
+
+				return $this->renderPhotos($r['photos'], $mode, $tag_attrs, $size, $limit);
 		}
 	}
 
 	function renderPhotos($result, $mode, $tag_attrs, $size, $limit) {
 		$html = '<p class="flickrTag_container">';
+
 		$i = null;
 
-		// limit tag or set count, if specified
-		if($mode == "tag" || $mode == "set" || $mode == "photostream")
+		if($mode != "photo")
 			$i = @array_slice($result['photo'], 0, $limit);
 		else 
 			$i = array($result);
@@ -264,7 +343,7 @@ class FlickrTagEngine extends FlickrTagCommon {
 					$title .= ' <a href="' . $a_url . '">view&nbsp;on&nbsp;flickr&raquo;</a>';
 					$a_url = "http://farm" . $photo['farm'] . ".static.flickr.com/" . $photo['server'] . "/" . $photo['id'] . "_" . $photo['secret'] . ".jpg";
 
-					$rel = "lightbox" . (($mode == "tag" || $mode == "set") ? "[" . $lightbox_uid . "]" : "");
+					$rel = "lightbox" . ((count($i) > 1) ? "[" . $lightbox_uid . "]" : "");
 
 					$html .= '<a href="' . $a_url . '" class="flickr" title="' . htmlentities($title, ENT_COMPAT, get_option("blog_charset")) . '" rel="' . $rel . '"><img src="' . $img_url . '" alt="' . $photo['title'] . '" class="flickr ' . $this->optionGet($mode . '_size') . ' ' . $mode . '" ' . $extra . '/></a>';
 
