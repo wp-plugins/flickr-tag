@@ -36,7 +36,7 @@ Or, use the "flickr" tag (syntax outlined in the popup media window).
 == Frequently Asked Questions ==
 
 = What's new in 2.4? =
-* Fixed issue with insertion of images into editor.
+* Fixed issue with insertion of images into editor under WP 2.7.
 * Better error reporting.
 * New photostream option.
 * New group pool option.
