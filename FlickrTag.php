@@ -5,7 +5,7 @@ Plugin URI: http://www.webopticon.com/archives/148
 Description: Insert Flickr sets, tags, photostreams, group pools or individual photos into your posts using a special Wordpress tag.
 Author: Jeff Maki
 Author URI: http://www.webopticon.com/about
-Version: 2.4.3
+Version: 2.4.4
 
 Copyright 2008 Jeffrey Maki (email: crimesagainstlogic@gmail.com)
 
@@ -31,7 +31,7 @@ require(dirname(__FILE__) . "/FlickrTagEngine.php");
 $e = new FlickrTagEngine();
 
 // load admin stuff if we're in the admin section--otherwise skip for speed.
-if(strpos($_SERVER['REQUEST_URI'], "wp-admin")) {
+if(strpos($_SERVER['REQUEST_URI'], "/wp-admin/") !== false) {
 	require(dirname(__FILE__) . "/FlickrTagAdmin.php");
 
 	$a = new FlickrTagAdmin();

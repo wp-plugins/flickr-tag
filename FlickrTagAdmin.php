@@ -27,21 +27,15 @@ class FlickrTagAdmin extends FlickrTagCommon {
 
         	add_action("admin_menu", array($this, "getAdminMenu"));
 		add_action("admin_print_scripts", array($this, "getAdminHead"));
+
        		add_action('media_buttons_context', array($this, "getButtonContext"));
+
 		add_action("media_upload_tabs", array($this, "getMediaUploadTabs"), 99); 
 		add_action("media_upload_flickr_tag", array($this, "getFlickrUploadContent"));
 		add_action("media_upload_flickr_tag_syntax", array($this, "getFlickrUploadContent"));
 		add_action("media_upload_flickr_tag_set", array($this, "getFlickrUploadContent"));
 		add_action("media_upload_flickr_tag_recent", array($this, "getFlickrUploadContent"));
 		add_action("media_upload_flickr_tag_favorites", array($this, "getFlickrUploadContent"));
-	}
-
-	// find only request parameters that belong to us
-	function getRequest() {
-		foreach($_REQUEST as $key=>$value) {
-			if(substr($key, 0, 11) == "flickr_tag_")
-				$this->request[substr($key, 11)] = $value;
-		}
 	}
 
 	function getAdminMenu() {
@@ -51,7 +45,7 @@ class FlickrTagAdmin extends FlickrTagCommon {
 	function getButtonContext($html) {
 	        global $post_ID, $temp_ID;
         
-		return $html . '<a href="media-upload.php?post_id=' . (int)(0 == $post_ID ? $temp_ID : $post_ID) . '&amp;type=flickr_tag&amp;TB_iframe=true&amp;height=450&amp;width=640" class="thickbox" title="Insert an image from Flickr"><img src="' . get_bloginfo("wpurl") . '/wp-content/plugins/flickr-tag/images/flickr-button.gif"/></a>';
+		return $html . '<a href="media-upload.php?post_id=' . (int)(0 == $post_ID ? $temp_ID : $post_ID) . '&amp;type=flickr_tag&amp;TB_iframe=true&amp;height=650&amp;width=640" class="thickbox" title="Insert an image from Flickr"><img src="' . get_bloginfo("wpurl") . '/wp-content/plugins/flickr-tag/images/flickr-button.gif"/></a>';
 	}
 
 	function getMediaUploadTabs($tabs) {
@@ -141,6 +135,14 @@ class FlickrTagAdmin extends FlickrTagCommon {
 		return null;
 	}
 
+	// find only request parameters that belong to us
+	function getRequest() {
+		foreach($_REQUEST as $key=>$value) {
+			if(substr($key, 0, 11) == "flickr_tag_")
+				$this->request[substr($key, 11)] = $value;
+		}
+	}
+
 	function processRequest() {
 		$has_error = false;
 
@@ -161,7 +163,7 @@ class FlickrTagAdmin extends FlickrTagCommon {
 
 				$this->optionSaveAll();
 			} else
-				echo $this->error("Error converting frob into token; authentication failed");
+				echo $this->error("Error converting frob into token; authentication failed.");
 		} else
 
 		// logout
@@ -212,7 +214,7 @@ class FlickrTagAdmin extends FlickrTagCommon {
 			}
 		}
 
-		// initial load; if in error, leave old values there
+		// initial load; if in error, leave old values there for user to fix
 		if(! $has_error)
 			foreach($this->config as $key=>$value)
 				$this->request[$key] = $value;
@@ -228,10 +230,13 @@ class FlickrTagAdmin extends FlickrTagCommon {
 	}
 
 	function getAdminContent() {
-		$this->processRequest();
 	?>
 		<div class="wrap">
 			<h2>Flickr Tag Plugin</h2>
+
+			<?php
+				$this->processRequest();
+			?>
 
 			<form action="" method="post">
 
@@ -276,7 +281,7 @@ class FlickrTagAdmin extends FlickrTagCommon {
 					</p>	
 				<?php
 						} else
-							echo $this->error("Error getting frob; authentication aborted");
+							echo $this->error("Error getting frob; authentication aborted.");
 					}
 				?>
 				</td>
@@ -434,7 +439,7 @@ class FlickrTagAdmin extends FlickrTagCommon {
 
 			$html .= '<input class="button" type="button" value="Insert" onClick="flickrTag_insertIntoEditor(\'[flickr]set:\' + document.getElementById(\'flickr_tag_sets\').value + \'[/flickr]\');">';
 		} else 
-			$html .= $this->error("API call failed to get available sets.");
+			$html .= $this->error("Call to get available sets failed.");
 
 		return $html;
 	}
@@ -455,10 +460,10 @@ class FlickrTagAdmin extends FlickrTagCommon {
 			foreach($r['photos']['photo'] as $number=>$photo) {
 				$img_url = "http://farm" . $photo['farm'] . ".static.flickr.com/" . $photo['server'] . "/" . $photo['id'] . "_" . $photo['secret'] . "_s.jpg";
 	
-				$html .= '<a href="#" onClick="flickrTag_insertIntoEditor(\'[flickr]photo:' . $photo['id'] . '[/flickr]\'); return false;" class="flickr"><img src="' . $img_url . '" alt="" class="flickr_img thumbnail set"/></a>';
+				$html .= '<a href="#" onClick="flickrTag_insertIntoEditor(\'[flickr]photo:' . $photo['id'] . '[/flickr]\'); return false;" class="flickr"><img src="' . $img_url . '" alt="" class="flickr square set"/></a>';
 			}
 		} else
-			$html .= $this->error("API call failed to get photos with method '" . $method . "'.");
+			$html .= $this->error("Call to method '" . $method . "' failed.");
 
 		return $html;
 	}
@@ -470,7 +475,7 @@ class FlickrTagAdmin extends FlickrTagCommon {
 
 		<p class="syntax">
 			[flickr <em>[params]</em>]set:set id<em>[(size[,limit])]</em>[/flickr] or <br/>
-			[flickr <em>[params]</em>]tag:tag1<em>[(,|+)tag2...][@username][(size[,limit])]</em>[/flickr] or <br/>
+			[flickr <em>[params]</em>]tag:tag 1<em>[(,|+)tag 2...][@username][(size[,limit])]</em>[/flickr] or <br/>
 			[flickr <em>[params]</em>]photo:photo id<em>[(size[,limit])]</em>[/flickr] or <br/>
 			[flickr <em>[params]</em>]photostream:<em>[username][(size[,limit])]</em>[/flickr] or <br/>
 			[flickr <em>[params]</em>]group:group name<em>[(size[,limit])]</em>[/flickr] <br/>
@@ -498,6 +503,22 @@ class FlickrTagAdmin extends FlickrTagCommon {
 
 		<p class="syntax">
 			[flickr style="padding: 10px;"]tag:railcar+adm@anemergencystop(large, 20)[/flickr]
+		</p>
+
+		<p>
+			To show anemergencystop's photostream, use:
+		</p>
+
+		<p class="syntax">
+			[flickr]photostream:anemergencystop[/flickr]
+		</p>
+
+		<p>
+			To show 10 photos from the Clearview Signs group pool, use:
+		</p>
+
+		<p class="syntax">
+			[flickr]group:clearview signs(,10)[/flickr]
 		</p>
 EOF;
 

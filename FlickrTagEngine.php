@@ -78,10 +78,10 @@ class FlickrTagEngine extends FlickrTagCommon {
 		}
 
 		if($mode != "photo" && $mode != "group" && $mode != "tag" && $mode != "set" && $mode != "photostream")
-			return $this->error("The mode " . $mode . " is invalid.");
+			return $this->error("The mode '" . $mode . "' is invalid.");
 
 
-		// set size and limit defaults, then process overrides if given
+		// get size and limit defaults, then process overrides if given
 		$size = $this->isPhotoSize($this->optionGet($mode . "_size"));
 		$limit = $this->isDisplayLimit($this->optionGet($mode . "_limit"));
 
@@ -100,7 +100,7 @@ class FlickrTagEngine extends FlickrTagCommon {
 					$limit = $this->isDisplayLimit(trim($overrides[1]));
 			}
 
-			// strip off overrides after processing
+			// strip off overrides from param after processing
 			$param = substr($param, 0, $p);
 		}
 
@@ -108,7 +108,7 @@ class FlickrTagEngine extends FlickrTagCommon {
 		switch($mode) {
 			case "set":
 				if(! $param)
-					return $this->error("No photo set ID was provided.");
+					return $this->error("No set ID was provided.");
 
 				$params = array(
 					'photoset_id'		=> $param,
@@ -128,9 +128,9 @@ class FlickrTagEngine extends FlickrTagCommon {
 				$tags = null;
 				$user = null;
 
+				// user restriction
 				$p = strpos($param, "@");
 
-				// user restriction provided
 				if($p !== false) {
 					$tags = substr($param, 0, $p);
 					$user = substr($param, $p + 1);
@@ -140,7 +140,7 @@ class FlickrTagEngine extends FlickrTagCommon {
 				}
 
 				if(! $tags)
-					return $this->error("No tags were provided.");
+					return $this->error("No search tags were provided.");
 
 				$params = array(
 					'method'		=> 'flickr.photos.search',
@@ -231,9 +231,9 @@ class FlickrTagEngine extends FlickrTagCommon {
 				$group = null;
 				$user = null;
 
+				// user restriction
 				$p = strpos($param, "@");
 
-				// user restriction provided
 				if($p) {
 					$group = substr($param, 0, $p);
 					$user = substr($param, $p + 1);
@@ -263,9 +263,9 @@ class FlickrTagEngine extends FlickrTagCommon {
 					return $this->error("Call to resolve group '" . $group . "' to an NSID failed.");
 				else {
 					if(count($r['groups'][group]) > 0)
-						$params['group_id'] = $r['groups'][group][0]['nsid'];
+						$params['group_id'] = $r['groups'][group][0]['nsid']; // use the first matching group's NSID
 					else
-						return $this->error("No group matching '" . $group . "' found.");
+						return $this->error("No group matching '" . $group . "' was found.");
 				}
 
 				if($user) {
@@ -295,6 +295,7 @@ class FlickrTagEngine extends FlickrTagCommon {
 	function renderPhotos($result, $mode, $tag_attrs, $size, $limit) {
 		$html = '<p class="flickrTag_container">';
 
+		// if we get a single photo back as a result, we need to wrap it in an array (HACK)
 		$i = null;
 
 		if($mode != "photo")
@@ -305,11 +306,13 @@ class FlickrTagEngine extends FlickrTagCommon {
 		if(! $i)
 			return;
 
+		// construct extra tags to add to each "img" tag we make
 		$default_extra = "";
 
 		if(is_array($tag_attrs)) {
 			foreach($tag_attrs as $k=>$v)
-				$default_extra .= $k . '="' . $v . '" ';
+				if(strtolower($k) != "title") // we use title, so if the user tries to set it, ignore it.
+					$default_extra .= $k . '="' . $v . '" ';
 
 			$default_extra = trim($default_extra);
 		}
@@ -319,6 +322,8 @@ class FlickrTagEngine extends FlickrTagCommon {
 		foreach($i as $photo) {
 			$extra = $default_extra;
 
+
+			// get photo metadata
 			$params = array(
 				'photo_id'		=> $photo['id'],
 				'method'		=> 'flickr.photos.getInfo',
@@ -329,11 +334,13 @@ class FlickrTagEngine extends FlickrTagCommon {
 
 			if(! $r)
 				return $this->error("Call to get metadata for photo '" . $photo['id'] . "' failed.");
-                                
 
+
+			// construct URLs for photo on flickr, and for the image itself                                
 			$a_url = "http://www.flickr.com/photos/" . $r['photo']['owner']['nsid'] . "/" . $photo['id'] . "/" . (($mode == "set") ? "in/set-" . $result['id'] . "/" : "");
 			$img_url = "http://farm" . $photo['farm'] . ".static.flickr.com/" . $photo['server'] . "/" . $photo['id'] . "_" . $photo['secret'] . $size . ".jpg";
 
+			// this becomes the tooltip or the caption in the lightbox
 			$title = trim($r['photo'][$this->optionGet($mode . '_tooltip')]['_content']);
 
 
@@ -345,7 +352,9 @@ class FlickrTagEngine extends FlickrTagCommon {
 
 					$rel = "lightbox" . ((count($i) > 1) ? "[" . $lightbox_uid . "]" : "");
 
-					$html .= '<a href="' . $a_url . '" class="flickr" title="' . htmlentities($title, ENT_COMPAT, get_option("blog_charset")) . '" rel="' . $rel . '"><img src="' . $img_url . '" alt="' . $photo['title'] . '" class="flickr ' . $this->optionGet($mode . '_size') . ' ' . $mode . '" ' . $extra . '/></a>';
+					$html .= '<a href="' . $a_url . '" class="flickr" title="' . htmlentities($title, ENT_COMPAT, get_option("blog_charset")) . '" rel="' . $rel . '">';
+					$html .= '<img src="' . $img_url . '" alt="' . $photo['title'] . '" class="flickr ' . $this->optionGet($mode . '_size') . ' ' . $mode . '" ' . $extra . '/>';
+					$html .= '</a>';
 
 					break;
 
@@ -353,7 +362,9 @@ class FlickrTagEngine extends FlickrTagCommon {
 					if($title)
 						$extra .= ' title="' . htmlentities($title, ENT_COMPAT, get_option("blog_charset")) . '"';
 
-					$html .= '<a href="' . $a_url . '" class="flickr"><img src="' . $img_url . '" alt="' . $photo['title'] . '" class="flickr ' . $this->optionGet($mode . '_size') . ' ' . $mode . '" ' . $extra . '/></a>';
+					$html .= '<a href="' . $a_url . '" class="flickr">';
+					$html .= '<img src="' . $img_url . '" alt="' . $photo['title'] . '" class="flickr ' . $this->optionGet($mode . '_size') . ' ' . $mode . '" ' . $extra . '/>';
+					$html .= '</a>';
 					
 					break;
 

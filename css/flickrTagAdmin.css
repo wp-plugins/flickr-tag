@@ -1,8 +1,10 @@
 .wrapper {
-	padding: 14px;
-	width: 640px;
-	height: 380px;
-	overflow: hidden;	
+	padding: 15px;
+}
+
+.square {
+	width: 75px;
+	height: 75px;
 }
 
 .more {
