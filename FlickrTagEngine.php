@@ -114,6 +114,7 @@ class FlickrTagEngine extends FlickrTagCommon {
 					'photoset_id'		=> $param,
 					'privacy_filter' 	=> 1, // public
 					'method'		=> 'flickr.photosets.getPhotos',
+					'extras'		=> 'original_format',
 					'format'		=> 'php_serial'
 				);
 
@@ -146,6 +147,7 @@ class FlickrTagEngine extends FlickrTagCommon {
 					'method'		=> 'flickr.photos.search',
 					'tags'			=> str_replace("+", ",", $tags), // flickr requires tags be separated by a comma
 					'format'		=> 'php_serial',
+					'extras'		=> 'original_format',
 					'sort'			=> 'relevance'
 				);
 
@@ -181,6 +183,7 @@ class FlickrTagEngine extends FlickrTagCommon {
 			case "photostream":
 				$params = array(
 					'method'		=> 'flickr.people.getPublicPhotos',
+					'extras'		=> 'original_format',
 					'format'		=> 'php_serial',
 				);
 
@@ -247,6 +250,7 @@ class FlickrTagEngine extends FlickrTagCommon {
 
 				$params = array(
 					'method'		=> 'flickr.groups.pools.getPhotos',
+					'extras'		=> 'original_format',
 					'format'		=> 'php_serial',
 				);
 
@@ -340,17 +344,19 @@ class FlickrTagEngine extends FlickrTagCommon {
 			$a_url = "http://www.flickr.com/photos/" . $r['photo']['owner']['nsid'] . "/" . $photo['id'] . "/" . (($mode == "set") ? "in/set-" . $result['id'] . "/" : "");
 
 			$secret = $photo['secret'];
-			if($size == "_o") {
-				if($photo['originalsecret'])
-					$secret = $photo['originalsecret'];
-				else {
-					$html .= $this->error("The author has chosen not to share the original photo file for the photo '" . $photo['id'] . "'.");
+			$format = "jpg";
 
+			if($size == "_o") {
+				if($photo['originalsecret'] && $photo['originalformat']) {
+					$secret = $photo['originalsecret'];
+					$format = $photo['originalformat'];
+				} else {
+					$html .= $this->error("The author has chosen not to share the original photo file for the photo '" . $photo['id'] . "'.");
 					continue;
 				}
 			}
 
-			$img_url = "http://farm" . $photo['farm'] . ".static.flickr.com/" . $photo['server'] . "/" . $photo['id'] . "_" . $secret . $size . ".jpg";
+			$img_url = "http://farm" . $photo['farm'] . ".static.flickr.com/" . $photo['server'] . "/" . $photo['id'] . "_" . $secret . $size . "." . $format;
 
 			// this becomes the tooltip or the caption in the lightbox
 			$title = trim($r['photo'][$this->optionGet($mode . '_tooltip')]['_content']);
