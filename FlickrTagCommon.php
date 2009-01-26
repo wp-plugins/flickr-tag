@@ -58,7 +58,8 @@ class FlickrTagCommon {
 				"thumbnail" => "_t",
 				"small" => "_m",
 				"medium" => "",
-				"large" => "_b"
+				"large" => "_b",
+				"original" => "_o"
 			);
 
 	function FlickrTagCommon() {

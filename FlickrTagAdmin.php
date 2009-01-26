@@ -77,7 +77,12 @@ class FlickrTagAdmin extends FlickrTagCommon {
 					<option value="small" <?php if($this->request[$entity . '_size'] == "small") echo "selected"; ?>>Small (240 x 180 pixels)</option>
 					<option value="medium" <?php if($this->request[$entity . '_size'] == "medium") echo "selected"; ?>>Medium (500 x 375 pixels)</option>
 					<option value="large" <?php if($this->request[$entity . '_size'] == "large") echo "selected"; ?>>Large (1024 x 768 pixels)</option>
+					<option value="original" <?php if($this->request[$entity . '_size'] == "original") echo "selected"; ?>>Original (varies in size)</option>
 				</select>
+
+				<p class="more">
+					The availability of "original" size images is dependent on the author's sharing settings. 
+				</p>
 			</td>
 			</tr>
 
@@ -101,6 +106,10 @@ class FlickrTagAdmin extends FlickrTagCommon {
 			</th>
 			<td>
 				<input type="text" size=3 name="flickr_tag_<?php echo $entity; ?>_limit" value="<?php echo $this->request[$entity . '_limit']; ?>"> photo(s).
+
+				<p class="more">
+					The Flickr API limits this value to 100 or less.
+				</p>
 			</td>
 			</tr>
 	<?php 
@@ -139,7 +148,7 @@ class FlickrTagAdmin extends FlickrTagCommon {
 	function getRequest() {
 		foreach($_REQUEST as $key=>$value) {
 			if(substr($key, 0, 11) == "flickr_tag_")
-				$this->request[substr($key, 11)] = $value;
+				$this->request[substr($key, 11)] = trim($value);
 		}
 	}
 

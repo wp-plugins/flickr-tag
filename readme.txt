@@ -40,6 +40,7 @@ Or, use the "flickr" tag (syntax outlined in the popup media window).
 * Better error reporting.
 * New photostream option.
 * New group pool option.
+* Availability of "original" size images.
 
 = What's new in 2.3? =
 * Compatability with 2.7.

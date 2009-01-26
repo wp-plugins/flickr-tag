@@ -338,7 +338,19 @@ class FlickrTagEngine extends FlickrTagCommon {
 
 			// construct URLs for photo on flickr, and for the image itself                                
 			$a_url = "http://www.flickr.com/photos/" . $r['photo']['owner']['nsid'] . "/" . $photo['id'] . "/" . (($mode == "set") ? "in/set-" . $result['id'] . "/" : "");
-			$img_url = "http://farm" . $photo['farm'] . ".static.flickr.com/" . $photo['server'] . "/" . $photo['id'] . "_" . $photo['secret'] . $size . ".jpg";
+
+			$secret = $photo['secret'];
+			if($size == "_o") {
+				if($photo['originalsecret'])
+					$secret = $photo['originalsecret'];
+				else {
+					$html .= $this->error("The author has chosen not to share the original photo file for the photo '" . $photo['id'] . "'.");
+
+					continue;
+				}
+			}
+
+			$img_url = "http://farm" . $photo['farm'] . ".static.flickr.com/" . $photo['server'] . "/" . $photo['id'] . "_" . $secret . $size . ".jpg";
 
 			// this becomes the tooltip or the caption in the lightbox
 			$title = trim($r['photo'][$this->optionGet($mode . '_tooltip')]['_content']);
