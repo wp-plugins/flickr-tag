@@ -9,11 +9,11 @@ Insert Flickr sets, tags or individual photos in your posts by using a special t
 
 == Description ==
 
-When I started using WordPress for [webopticon.com][], I had a hard time finding a [Flickr][] plugin that didn't download all the photos onto my server, have them appear in a separate gallery, or otherwise look totally kitsch. I just wanted something simple. I wanted thumbnails to show, and I wanted to be able to put them "inline" in my posts. Keep the photos and discussion on Flickr, as far as I'm concerned. I couldn't find anybody to share my design goals.
+When I started using WordPress for my blog, I had a hard time finding a [Flickr][] plugin that didn't download all the photos onto my 
+server, have them appear in a separate gallery, or otherwise look totally horrible. I just wanted something simple. I wanted 
+thumbnails to show, and I wanted to be able to put them "inline" in my posts. Keep the photos and discussion on Flickr, as far as I'm 
+concerned. I couldn't find anybody to share my design goals. My solution was to write my own plugin, and this is it!
 
-My solution was to write my own plugin.
-
-[webopticon.com]: http://www.webopticon.com
 [Flickr]: http://www.flickr.com
 
 == Installation ==
