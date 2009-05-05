@@ -5,14 +5,16 @@ Requires at least: 2.5
 Tested up to: 2.7
 Stable tag: trunk
 
-Insert Flickr sets, tags or individual photos in your posts by using a special tag.
+Insert Flickr sets, tags, photostreams, group pools or individual photos into your posts using a special Wordpress tag.
 
 == Description ==
 
 When I started using WordPress for my blog, I had a hard time finding a [Flickr][] plugin that didn't download all the photos onto my 
-server, have them appear in a separate gallery, or otherwise look totally horrible. I just wanted something simple. I wanted 
-thumbnails to show, and I wanted to be able to put them "inline" in my posts. Keep the photos and discussion on Flickr, as far as I'm 
-concerned. I couldn't find anybody to share my design goals. My solution was to write my own plugin, and this is it!
+server, have them appear in a separate gallery out of context from my post, or otherwise look totally horrible. I just wanted something simple. 
+Keep the photos themselves and discussion on Flickr, as far as I'm concerned. I couldn't find anybody to share my design goals, and Flickr Tag was 
+born. 
+
+*I CAN NO LONGER DEDICATE TIME TO MAINTAIN THIS PROJECT. IF YOU'D LIKE TO BECOME A MAINTAINER, CONTACT ME!*
 
 [Flickr]: http://www.flickr.com
 
