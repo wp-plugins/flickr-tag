@@ -371,7 +371,7 @@ class FlickrTagEngine extends FlickrTagCommon {
 					$rel = "lightbox" . ((count($i) > 1) ? "[" . $lightbox_uid . "]" : "");
 
 					$html .= '<a href="' . $a_url . '" class="flickr" title="' . htmlentities($title, ENT_COMPAT, get_option("blog_charset")) . '" rel="' . $rel . '">';
-					$html .= '<img src="' . $img_url . '" alt="' . $photo['title'] . '" class="flickr ' . $this->optionGet($mode . '_size') . ' ' . $mode . '" ' . $extra . '/>';
+					$html .= '<img src="' . $img_url . '" alt="' . ((is_array($photo['title'])) ? $photo['title']['_content'] : $photo['title']) . '" class="flickr ' . $this->optionGet($mode . '_size') . ' ' . $mode . '" ' . $extra . '/>';
 					$html .= '</a>';
 
 					break;
