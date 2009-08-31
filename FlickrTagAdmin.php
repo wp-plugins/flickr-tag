@@ -371,6 +371,7 @@ class FlickrTagAdmin extends FlickrTagCommon {
 						<option value="604800" <?php if($this->request['cache_ttl'] == "604800") echo "selected"; ?>>1 week</option>
 						<option value="1209600" <?php if($this->request['cache_ttl'] == "1209600") echo "selected"; ?>>2 weeks</option>
 						<option value="2592000" <?php if($this->request['cache_ttl'] == "2592000") echo "selected"; ?>>1 month</option>
+						<option value="-1" <?php if($this->request['cache_ttl'] == "-1") echo "selected"; ?>>Forever</option>
 					</select>
 				</td>
 				</tr>

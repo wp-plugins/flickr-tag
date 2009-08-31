@@ -153,7 +153,7 @@ class FlickrTagCommon {
 		$cache_key = md5(join($params, " "));
 		$cache_file = FLICKR_TAG_CACHE_DIR . "/" . $cache_key . ".cache";
 
-		if($cache && file_exists($cache_file) && (time() - filemtime($cache_file)) < $this->optionGet('cache_ttl')) {
+		if($cache && file_exists($cache_file) && ((time() - filemtime($cache_file)) < $this->optionGet('cache_ttl') || $this->optionGet('cache_ttl') == -1)) {
 			$o = unserialize(file_get_contents($cache_file));
 
 		// cache miss: make request
