@@ -11,8 +11,9 @@ Insert Flickr sets, tags, photostreams, group pools or individual photos into yo
 
 When I started using WordPress for my blog, I had a hard time finding a [Flickr][] plugin that didn't download all the photos onto my 
 server, have them appear in a separate gallery out of context from my post, or otherwise look totally horrible. I just wanted something simple. 
-Keep the photos themselves and discussion on Flickr, as far as I'm concerned. I couldn't find anybody to share my design goals, and Flickr Tag was 
-born. 
+Keep the photos themselves and discussion on Flickr, as far as I'm concerned. 
+
+I couldn't find anybody to share my design goals, so Flickr Tag was born!
 
 [Flickr]: http://www.flickr.com
 
