@@ -17,8 +17,8 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-define("FLICKR_TAG_API_KEY", "ab3d8caa418c7e03aeda35edb756d223");
-define("FLICKR_TAG_API_KEY_SS", "2406fd6c36b852fd");
+define("FLICKR_TAG_API_KEY", "3527841ff32cd1dc7a1d7dbe710ee882");
+define("FLICKR_TAG_API_KEY_SS", "e2d9cfb5fdb717b2");
 
 define("FLICKR_TAG_CACHE_DIR", dirname(__FILE__) . "/cache");
 

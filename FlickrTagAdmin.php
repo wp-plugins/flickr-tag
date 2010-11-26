@@ -59,7 +59,8 @@ class FlickrTagAdmin extends FlickrTagCommon {
 	function getFlickrUploadContent() {
 		wp_enqueue_style("media");
 
-		return wp_iframe(array($this, "getIFrameContent"));
+		// (hide the error from WP about passing in an array to this function)
+		return @wp_iframe(array($this, "getIFrameContent"));
 	}
 
 	function getDisplayDefaultsOptionsHTML($entity) {

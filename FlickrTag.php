@@ -5,7 +5,7 @@ Plugin URI: http://wordpress.org/extend/plugins/flickr-tag/
 Description: Insert Flickr sets, tags, photostreams, group pools or individual photos into your posts using a special Wordpress tag.
 Author: Jeff Maki
 Author URI: http://www.jeffmaki.com
-Version: 2.4.6
+Version: 2.4.7
 
 Copyright 2008 Jeffrey Maki (email: crimesagainstlogic@gmail.com)
 

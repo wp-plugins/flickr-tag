@@ -2,7 +2,7 @@
 Contributors: crimesagainstlogic
 Tags: flickr, thumbnails, tag, sets, photos, lightbox, images
 Requires at least: 2.5
-Tested up to: 2.7
+Tested up to: 3.0.1
 Stable tag: trunk
 
 Insert Flickr sets, tags, photostreams, group pools or individual photos into your posts using a special Wordpress tag.
@@ -13,8 +13,6 @@ When I started using WordPress for my blog, I had a hard time finding a [Flickr]
 server, have them appear in a separate gallery out of context from my post, or otherwise look totally horrible. I just wanted something simple. 
 Keep the photos themselves and discussion on Flickr, as far as I'm concerned. I couldn't find anybody to share my design goals, and Flickr Tag was 
 born. 
-
-*I CAN NO LONGER DEDICATE TIME TO MAINTAIN THIS PROJECT. IF YOU'D LIKE TO BECOME A MAINTAINER, CONTACT ME!*
 
 [Flickr]: http://www.flickr.com
 
@@ -36,6 +34,10 @@ Or, use the "flickr" tag (syntax outlined in the popup media window).
 [standard WordPress installation method]: http://codex.wordpress.org/Managing_Plugins#Installing_Plugins
 
 == Frequently Asked Questions ==
+
+=What's new in 2.4.7?=
+* Tested with WP 3.0.1.
+* New API key.
 
 = What's new in 2.4? =
 * Fixed issue with insertion of images into editor under WP 2.7.
