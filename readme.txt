@@ -1,5 +1,5 @@
 === Plugin Name ===
-Contributors: crimesagainstlogic
+Contributors: jeffmaki
 Tags: flickr, thumbnails, tag, sets, photos, lightbox, images
 Requires at least: 2.5
 Tested up to: 3.0.1
