@@ -94,9 +94,9 @@ Or, use the "flickr" tag (syntax outlined in the popup media window).
 
 Special thanks to the following for their contributions and bug reports (listed in no particular order):
 
-Jon Baker<br/>
-Niki Gorchilov<br/>
-Michael Fruehmann<br/>
-Tyson Cecka<br/>
-Jean-Paul Horn<br/>
+*Jon Baker
+*Niki Gorchilov
+*Michael Fruehmann
+*Tyson Cecka
+*Jean-Paul Horn
 
