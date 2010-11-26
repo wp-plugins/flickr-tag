@@ -36,7 +36,7 @@ Or, use the "flickr" tag (syntax outlined in the popup media window).
 
 == Frequently Asked Questions ==
 
-=What's new in 2.4.7?=
+= What's new in 2.4.7? =
 * Tested with WP 3.0.1.
 * New API key.
 
@@ -94,9 +94,9 @@ Or, use the "flickr" tag (syntax outlined in the popup media window).
 
 Special thanks to the following for their contributions and bug reports (listed in no particular order):
 
-*Jon Baker
-*Niki Gorchilov
-*Michael Fruehmann
-*Tyson Cecka
-*Jean-Paul Horn
+* Jon Baker
+* Niki Gorchilov
+* Michael Fruehmann
+* Tyson Cecka
+* Jean-Paul Horn
 
