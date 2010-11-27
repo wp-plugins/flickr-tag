@@ -1,14 +1,12 @@
+.flickrTag_container a.flickr,
 .flickrTag_container img.flickr {
 	border: 0px;
+	text-decoration: none;
 }
 
 .flickrTag_container img.set, .flickrTag_container img.tag, .flickrTag_container img.photostream, .flickrTag_container img.group {
 	margin-right: 5px;
 	margin-bottom: 5px;
-}
-
-.flickrTag_container a.flickr {
-	text-decoration: none;
 }
 
 
